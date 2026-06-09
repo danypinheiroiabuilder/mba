@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/Button";
@@ -23,7 +24,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { ready, user, signOut } = useAuthStore();
 
+  const isAuthPage = pathname === "/login" || pathname === "/reset";
   const isLogin = pathname === "/login";
+
+  useEffect(() => {
+    if (!ready) return;
+    if (!user && !isAuthPage) router.replace("/login");
+    if (user && isLogin) router.replace("/");
+  }, [ready, user, isAuthPage, isLogin, router]);
 
   if (!ready) {
     return (
@@ -33,19 +41,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user && !isLogin) {
-    router.replace("/login");
-    return null;
+  if (!user && !isAuthPage) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+        <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
+      </div>
+    );
   }
 
   if (user && isLogin) {
-    router.replace("/");
-    return null;
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+        <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
+      </div>
+    );
   }
 
   return (
     <div className="min-h-dvh w-full">
-      {isLogin ? (
+      {isAuthPage ? (
         <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
           {children}
         </div>

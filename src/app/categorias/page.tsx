@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import type { CashflowType } from "@/lib/types";
 import { categorySchema, type CategoryInput } from "@/lib/types";
@@ -60,7 +60,7 @@ export default function CategoriasPage() {
     resolver: zodResolver(categorySchema),
     defaultValues: { name: "", type: "expense", color: "#6E7BFF" },
   });
-  const color = form.watch("color");
+  const color = useWatch({ control: form.control, name: "color" });
 
   async function onSubmit(values: CategoryInput) {
     if (!user) return;
