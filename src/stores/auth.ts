@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to initialize auth";
       console.error("[Auth] Init error:", message, e);
-      set({ ready: true, error: message, configOk: true });
+      set({ ready: true, error: message, configOk: false });
     }
   },
 
