@@ -22,16 +22,17 @@ function isActive(pathname: string, href: string) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { ready, user, signOut } = useAuthStore();
+  const { ready, user, signOut, configOk } = useAuthStore();
 
   const isAuthPage = pathname === "/login" || pathname === "/reset";
   const isLogin = pathname === "/login";
 
   useEffect(() => {
     if (!ready) return;
+    if (!configOk && !isAuthPage) router.replace("/login");
     if (!user && !isAuthPage) router.replace("/login");
     if (user && isLogin) router.replace("/");
-  }, [ready, user, isAuthPage, isLogin, router]);
+  }, [ready, user, configOk, isAuthPage, isLogin, router]);
 
   // Páginas de autenticação podem ser renderizadas antes de `ready` ser true
   if (isAuthPage) {

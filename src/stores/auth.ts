@@ -32,7 +32,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     try {
-      const { data, error } = await supabase.auth.getSession();
+      const timeoutPromise = new Promise<{ data: { session: null }; error: Error }>((resolve) =>
+        setTimeout(
+          () => resolve({ data: { session: null }, error: new Error("getSession timeout") }),
+          8000
+        )
+      );
+      const { data, error } = await Promise.race([supabase.auth.getSession(), timeoutPromise]);
+
       if (error) throw error;
       set({ session: data.session ?? null, user: data.session?.user ?? null, ready: true, error: null, configOk: true });
 
