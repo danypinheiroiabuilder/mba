@@ -26,6 +26,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (get().ready) return;
 
     const supabase = getSupabase();
+    console.log("[Auth] init() - supabase:", supabase ? "configured" : "NOT configured");
     if (!supabase) {
       set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
       return;
@@ -40,8 +41,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       );
       const { data, error } = await Promise.race([supabase.auth.getSession(), timeoutPromise]);
 
+      console.log("[Auth] getSession result:", { hasSession: !!data.session, hasError: !!error, errorMsg: error?.message });
       if (error) throw error;
       set({ session: data.session ?? null, user: data.session?.user ?? null, ready: true, error: null, configOk: true });
+      console.log("[Auth] Session set, user:", data.session?.user?.email ?? "none");
 
       supabase.auth.onAuthStateChange((_event, session) => {
         set({ session: session ?? null, user: session?.user ?? null, ready: true });
