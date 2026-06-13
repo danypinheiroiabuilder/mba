@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { ready, user, configOk } = useAuthStore();
+  const { ready, user, configOk, init } = useAuthStore();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
 
   const [email, setEmail] = useState("");
@@ -99,6 +99,7 @@ export default function LoginPage() {
         return;
       }
 
+      await init();
       router.replace("/");
     } catch (e: unknown) {
       let errorMsg = e instanceof Error ? e.message : "Erro ao autenticar.";
