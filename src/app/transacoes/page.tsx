@@ -68,7 +68,7 @@ export default function TransacoesPage() {
       amount: 0,
       date: format(new Date(), "yyyy-MM-dd"),
       tag: "",
-      paymentMethod: "",
+      paymentMethod: undefined,
     },
   });
 
@@ -86,7 +86,7 @@ export default function TransacoesPage() {
       amount: 0,
       date: format(new Date(), "yyyy-MM-dd"),
       tag: "",
-      paymentMethod: "",
+      paymentMethod: undefined,
     });
     setOpen(true);
   }
@@ -100,7 +100,7 @@ export default function TransacoesPage() {
       amount: t.amount,
       date: t.date,
       tag: t.tag ?? "",
-      paymentMethod: t.paymentMethod ?? "",
+      paymentMethod: t.paymentMethod,
     });
     setOpen(true);
   }
