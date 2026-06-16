@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import type { Transaction } from "@/lib/types";
 import { formatBRL } from "@/lib/money";
@@ -21,7 +22,7 @@ interface TransactionRowProps {
   runningBalance?: number;
 }
 
-export function TransactionRow({
+export const TransactionRow = memo(function TransactionRow({
   transaction: t,
   category: c,
   onEdit,
@@ -100,4 +101,4 @@ export function TransactionRow({
       </div>
     </motion.div>
   );
-}
+});

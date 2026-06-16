@@ -1,7 +1,7 @@
-import { format, parseISO, startOfMonth, subMonths } from "date-fns";
+import { format, parseISO, startOfMonth, subMonths, lastDayOfMonth } from "date-fns";
 
 import { requireSupabase } from "@/services/supabase/client";
-import type { Transaction, TransactionInput, CashflowType } from "@/lib/types";
+import type { Transaction, TransactionInput, CashflowType, PaymentMethod } from "@/lib/types";
 
 type TransactionRow = {
   id: string;
@@ -25,7 +25,7 @@ function mapTransaction(row: TransactionRow): Transaction {
     amount: Number(row.amount),
     date: row.date,
     tag: row.tag ?? undefined,
-    paymentMethod: row.payment_method ? (row.payment_method as any) : undefined,
+    paymentMethod: row.payment_method ? (row.payment_method as PaymentMethod) : undefined,
     createdAt: row.created_at,
   };
 }
@@ -33,7 +33,7 @@ function mapTransaction(row: TransactionRow): Transaction {
 export async function listTransactionsByMonth(monthKey: string): Promise<Transaction[]> {
   const supabase = requireSupabase();
   const from = `${monthKey}-01`;
-  const to = `${monthKey}-31`;
+  const to = format(lastDayOfMonth(parseISO(from)), "yyyy-MM-dd");
 
   const { data, error } = await supabase
     .from("transactions")

@@ -12,8 +12,11 @@ type AuthState = {
   configOk: boolean;
   error: string | null;
   init: () => Promise<void>;
+  destroy: () => void;
   signOut: () => Promise<void>;
 };
+
+let _unsubscribe: (() => void) | null = null;
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   ready: false,
@@ -43,14 +46,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (error) throw error;
       set({ session: data.session ?? null, user: data.session?.user ?? null, ready: true, error: null, configOk: true });
 
-      supabase.auth.onAuthStateChange((_event, session) => {
+      // garante apenas um listener ativo mesmo em HMR / StrictMode
+      _unsubscribe?.();
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         set({ session: session ?? null, user: session?.user ?? null, ready: true });
       });
+      _unsubscribe = () => subscription.unsubscribe();
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to initialize auth";
       console.error("[Auth] Init error:", message, e);
       set({ ready: true, error: message, configOk: false });
     }
+  },
+
+  destroy: () => {
+    _unsubscribe?.();
+    _unsubscribe = null;
   },
 
   signOut: async () => {

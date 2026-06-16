@@ -23,6 +23,7 @@ export default function CategoriasPage() {
   const { user } = useAuthStore();
   const {
     categories,
+    categoriesError,
     refreshCategories,
     addCategory,
     removeCategory: removeCategoryAction,
@@ -34,6 +35,10 @@ export default function CategoriasPage() {
   useEffect(() => {
     void refreshCategories();
   }, [refreshCategories]);
+
+  useEffect(() => {
+    if (categoriesError) toast.error(`Erro ao carregar categorias: ${categoriesError}`);
+  }, [categoriesError]);
 
   const byType = useMemo(() => {
     const income = categories.filter((c) => c.type === "income");

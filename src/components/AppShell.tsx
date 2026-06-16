@@ -8,6 +8,14 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/Button";
 
+function LoadingSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+      <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
+    </div>
+  );
+}
+
 const nav = [
   { href: "/", label: "Dashboard" },
   { href: "/transacoes", label: "Receitas & Despesas" },
@@ -36,21 +44,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Páginas de autenticação podem ser renderizadas antes de `ready` ser true
   if (isAuthPage) {
-    if (!ready) {
-      return (
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-          <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
-        </div>
-      );
-    }
+    if (!ready) return <LoadingSkeleton />;
     // Se usuário logado tenta acessar login, redireciona
-    if (user && isLogin) {
-      return (
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-          <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
-        </div>
-      );
-    }
+    if (user && isLogin) return <LoadingSkeleton />;
     // Mostra página de auth (login/reset)
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
@@ -60,21 +56,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   // Páginas protegidas precisam aguardar `ready` e autenticação
-  if (!ready) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-        <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-        <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
-      </div>
-    );
-  }
+  if (!ready) return <LoadingSkeleton />;
+  if (!user) return <LoadingSkeleton />;
 
   // Aqui só chegam páginas protegidas com usuário logado
   return (

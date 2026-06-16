@@ -25,8 +25,17 @@ import { TransactionRow } from "@/components/TransactionRow";
 import { clampMonthKey, monthLabelFromKey, shiftMonthKey } from "@/lib/dates";
 import { formatBRL } from "@/lib/money";
 import { buildCategoryMap, sumBy } from "@/lib/helpers";
+import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
 import { useDataStore } from "@/stores/data";
+
+type CommitmentLevel = { label: string; color: string };
+
+function classifyCommitment(ratio: number): CommitmentLevel {
+  if (ratio < 0.7) return { label: "✓ Saudável", color: "text-income" };
+  if (ratio < 0.9) return { label: "⚠ Atenção", color: "text-[#f4a261]" };
+  return { label: "✕ Alto", color: "text-expense" };
+}
 
 function TrendBadge({ value, percentage }: { value: number; percentage?: number }) {
   if (value === 0) return <span className="text-xs text-muted">—</span>;
@@ -54,8 +63,11 @@ export function DashboardPage() {
 
   const {
     categories,
+    categoriesError,
     transactions: monthTx,
+    transactionsError,
     cashflow12m,
+    cashflowError,
     refreshCategories,
     refreshTransactions,
     refreshCashflow12m,
@@ -67,6 +79,18 @@ export function DashboardPage() {
     void refreshTransactions(safeMonthKey);
     void refreshCashflow12m();
   }, [user, refreshCategories, refreshTransactions, refreshCashflow12m, safeMonthKey]);
+
+  useEffect(() => {
+    if (categoriesError) toast.error(`Erro ao carregar categorias: ${categoriesError}`);
+  }, [categoriesError]);
+
+  useEffect(() => {
+    if (transactionsError) toast.error(`Erro ao carregar lançamentos: ${transactionsError}`);
+  }, [transactionsError]);
+
+  useEffect(() => {
+    if (cashflowError) toast.error(`Erro ao carregar fluxo de caixa: ${cashflowError}`);
+  }, [cashflowError]);
 
   const categoryById = useMemo(() => buildCategoryMap(categories), [categories]);
 
@@ -192,21 +216,10 @@ export function DashboardPage() {
                   : "—"}
               </div>
               <div className="mt-2">
-                {monthTotals.totalIncome > 0 && (
-                  <span className={`text-xs font-medium ${
-                    monthTotals.totalExpense / monthTotals.totalIncome < 0.7
-                      ? "text-income"
-                      : monthTotals.totalExpense / monthTotals.totalIncome < 0.9
-                        ? "text-[#f4a261]"
-                        : "text-expense"
-                  }`}>
-                    {monthTotals.totalExpense / monthTotals.totalIncome < 0.7
-                      ? "✓ Saudável"
-                      : monthTotals.totalExpense / monthTotals.totalIncome < 0.9
-                        ? "⚠ Atenção"
-                        : "✕ Alto"}
-                  </span>
-                )}
+                {monthTotals.totalIncome > 0 && (() => {
+                  const c = classifyCommitment(monthTotals.totalExpense / monthTotals.totalIncome);
+                  return <span className={`text-xs font-medium ${c.color}`}>{c.label}</span>;
+                })()}
               </div>
             </div>
             <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />
@@ -358,7 +371,9 @@ export function DashboardPage() {
               </thead>
               <tbody>
                 {chartData.map((month, idx) => {
-                  const commitment = month.income > 0 ? Math.round((month.expense / month.income) * 100) : 0;
+                  const ratio = month.income > 0 ? month.expense / month.income : 0;
+                  const commitment = Math.round(ratio * 100);
+                  const c = month.income > 0 ? classifyCommitment(ratio) : null;
                   return (
                     <tr key={month.monthKey} className={idx % 2 === 0 ? "bg-card/20" : ""}>
                       <td className="px-4 py-3 font-medium text-text sm:px-6">
@@ -375,9 +390,7 @@ export function DashboardPage() {
                       }`}>
                         {formatBRL(month.balance)}
                       </td>
-                      <td className={`px-4 py-3 text-right font-medium sm:px-6 ${
-                        commitment < 70 ? "text-income" : commitment < 90 ? "text-[#f4a261]" : "text-expense"
-                      }`}>
+                      <td className={`px-4 py-3 text-right font-medium sm:px-6 ${c?.color ?? "text-muted"}`}>
                         {commitment}%
                       </td>
                     </tr>

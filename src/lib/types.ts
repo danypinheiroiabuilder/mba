@@ -3,6 +3,15 @@ import { z } from "zod";
 export type CashflowType = "income" | "expense";
 export type PaymentMethod = "pix" | "debito" | "credito" | "dinheiro" | "transferencia" | "outro";
 
+export const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
+  { value: "pix", label: "Pix" },
+  { value: "debito", label: "Débito" },
+  { value: "credito", label: "Crédito" },
+  { value: "dinheiro", label: "Dinheiro" },
+  { value: "transferencia", label: "Transferência" },
+  { value: "outro", label: "Outro" },
+];
+
 export type Category = {
   id: string;
   name: string;

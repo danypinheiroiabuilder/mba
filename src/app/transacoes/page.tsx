@@ -8,10 +8,10 @@ import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 
 import type { Transaction } from "@/lib/types";
-import { transactionSchema, type TransactionInput } from "@/lib/types";
+import { transactionSchema, type TransactionInput, PAYMENT_METHODS } from "@/lib/types";
 import { clampMonthKey, monthLabelFromKey, shiftMonthKey } from "@/lib/dates";
 import { formatBRL } from "@/lib/money";
-import { buildCategoryMap, calculateTotals } from "@/lib/helpers";
+import { calculateTotals } from "@/lib/helpers";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
@@ -35,7 +35,9 @@ export default function TransacoesPage() {
 
   const {
     categories: allCategories,
+    categoriesError,
     transactions: tx,
+    transactionsError,
     refreshCategories,
     refreshTransactions,
     saveTransaction,
@@ -50,8 +52,15 @@ export default function TransacoesPage() {
     void refreshTransactions(safeMonthKey);
   }, [refreshTransactions, safeMonthKey]);
 
+  useEffect(() => {
+    if (categoriesError) toast.error(`Erro ao carregar categorias: ${categoriesError}`);
+  }, [categoriesError]);
+
+  useEffect(() => {
+    if (transactionsError) toast.error(`Erro ao carregar lançamentos: ${transactionsError}`);
+  }, [transactionsError]);
+
   const categoryById = useMemo(() => {
-    const map = buildCategoryMap(allCategories);
     const mapWithType = new Map<string, { name: string; color: string; type: string }>();
     for (const c of allCategories) {
       mapWithType.set(c.id, { name: c.name, color: c.color, type: c.type });
@@ -349,12 +358,9 @@ export default function TransacoesPage() {
             <div className="text-xs font-medium text-muted">Forma de pagamento (opcional)</div>
             <Select {...form.register("paymentMethod")}>
               <option value="">Selecione...</option>
-              <option value="pix">Pix</option>
-              <option value="debito">Débito</option>
-              <option value="credito">Crédito</option>
-              <option value="dinheiro">Dinheiro</option>
-              <option value="transferencia">Transferência</option>
-              <option value="outro">Outro</option>
+              {PAYMENT_METHODS.map(({ value, label }) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
             </Select>
             <FieldError message={form.formState.errors.paymentMethod?.message} />
           </div>

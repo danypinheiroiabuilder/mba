@@ -1,7 +1,12 @@
--- Seed data para usuário teste@teste.com.br
+-- Seed data de desenvolvimento. Execute com:
+--   SEED_USER_ID=<uuid> psql ... -f seed.sql
+-- Nunca rode em produção com um UUID de usuário real.
 DO $$
 DECLARE
-  v_user_id uuid := '60db40ad-7a81-4e1f-9a05-27b7f21ca599'; -- teste@teste.com.br
+  v_user_id uuid := COALESCE(
+    current_setting('app.seed_user_id', true)::uuid,
+    '00000000-0000-0000-0000-000000000001'  -- placeholder para dev local
+  );
   v_cat_salario uuid;
   v_cat_freela  uuid;
   v_cat_moradia uuid;
