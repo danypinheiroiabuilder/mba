@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { AnimatePresence } from "framer-motion";
 
 import type { Transaction } from "@/lib/types";
 import { transactionSchema, type TransactionInput } from "@/lib/types";
@@ -105,10 +107,14 @@ export default function TransacoesPage() {
 
   async function onSubmit(values: TransactionInput) {
     if (!user) return;
-    await saveTransaction(values, user.id, editing?.id);
-
-    setOpen(false);
-    setEditing(null);
+    try {
+      await saveTransaction(values, user.id, editing?.id);
+      toast.success(editing ? "Lançamento atualizado" : "Lançamento salvo");
+      setOpen(false);
+      setEditing(null);
+    } catch (error) {
+      toast.error("Erro ao salvar lançamento");
+    }
   }
 
   const [filterCategoryId, setFilterCategoryId] = useState("");
@@ -144,8 +150,13 @@ export default function TransacoesPage() {
   }, [filteredTx]);
 
   async function removeTx(id: string) {
-    await removeTransaction(id);
-    setDeleteConfirm(null);
+    try {
+      await removeTransaction(id);
+      toast.success("Lançamento removido");
+      setDeleteConfirm(null);
+    } catch (error) {
+      toast.error("Erro ao remover lançamento");
+    }
   }
 
   return (
@@ -218,19 +229,21 @@ export default function TransacoesPage() {
               Nenhum lançamento com os filtros atuais.
             </div>
           ) : (
-            filteredTx
-              .slice()
-              .sort((a, b) => (a.date < b.date ? 1 : -1))
-              .map((t) => (
-                <TransactionRow
-                  key={t.id}
-                  transaction={t}
-                  category={categoryById.get(t.categoryId)}
-                  onEdit={openEdit}
-                  onDelete={setDeleteConfirm}
-                  runningBalance={runningBalances.get(t.id)}
-                />
-              ))
+            <AnimatePresence>
+              {filteredTx
+                .slice()
+                .sort((a, b) => (a.date < b.date ? 1 : -1))
+                .map((t) => (
+                  <TransactionRow
+                    key={t.id}
+                    transaction={t}
+                    category={categoryById.get(t.categoryId)}
+                    onEdit={openEdit}
+                    onDelete={setDeleteConfirm}
+                    runningBalance={runningBalances.get(t.id)}
+                  />
+                ))}
+            </AnimatePresence>
           )}
         </div>
       </Card>

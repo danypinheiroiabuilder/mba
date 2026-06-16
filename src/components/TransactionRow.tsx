@@ -5,6 +5,13 @@ import type { Transaction } from "@/lib/types";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/Button";
 
+const exitAnimation = {
+  opacity: 0,
+  x: -16,
+  height: 0,
+  marginBottom: 0,
+};
+
 interface TransactionRowProps {
   transaction: Transaction;
   category?: { name: string; color: string };
@@ -28,6 +35,7 @@ export function TransactionRow({
       className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/30 px-3 py-2"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={exitAnimation}
       transition={{ duration: 0.16, ease: "easeOut" }}
     >
       <div className="min-w-0">
@@ -48,9 +56,19 @@ export function TransactionRow({
       </div>
 
       <div className="flex shrink-0 flex-wrap items-center justify-end gap-1 sm:gap-2">
+        <span
+          className={[
+            "text-xs px-2 py-0.5 rounded-full font-medium",
+            t.type === "income"
+              ? "bg-income/10 text-income"
+              : "bg-expense/10 text-expense",
+          ].join(" ")}
+        >
+          {t.type === "income" ? "Receita" : "Despesa"}
+        </span>
         <div
           className={[
-            "w-full text-right text-sm font-semibold",
+            "text-right text-sm font-semibold",
             t.type === "income" ? "text-income" : "text-expense",
           ].join(" ")}
         >

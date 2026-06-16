@@ -28,14 +28,14 @@ import { buildCategoryMap, sumBy } from "@/lib/helpers";
 import { useAuthStore } from "@/stores/auth";
 import { useDataStore } from "@/stores/data";
 
-function TrendBadge({ value }: { value: number }) {
+function TrendBadge({ value, percentage }: { value: number; percentage?: number }) {
   if (value === 0) return <span className="text-xs text-muted">—</span>;
   const isPositive = value > 0;
   const symbol = isPositive ? "↑" : "↓";
   const color = isPositive ? "text-income" : "text-expense";
   return (
     <span className={`text-xs font-medium ${color}`}>
-      {symbol} {formatBRL(Math.abs(value))}
+      {symbol} {percentage !== undefined ? `${percentage.toFixed(1)}%` : formatBRL(Math.abs(value))}
     </span>
   );
 }
@@ -105,6 +105,10 @@ export function DashboardPage() {
     const prevExpense = prevMonthData?.expense ?? 0;
     const prevBalance = prevMonthData?.balance ?? 0;
 
+    const incomePercentage = prevIncome > 0 ? ((totalIncome - prevIncome) / prevIncome) * 100 : 0;
+    const expensePercentage = prevExpense > 0 ? ((totalExpense - prevExpense) / prevExpense) * 100 : 0;
+    const balancePercentage = prevBalance > 0 ? ((balance - prevBalance) / Math.abs(prevBalance)) * 100 : 0;
+
     return {
       totalIncome,
       totalExpense,
@@ -112,6 +116,9 @@ export function DashboardPage() {
       incomeChange: totalIncome - prevIncome,
       expenseChange: totalExpense - prevExpense,
       balanceChange: balance - prevBalance,
+      incomePercentage,
+      expensePercentage,
+      balancePercentage,
       latest: [...monthTx]
         .sort((a, b) => (a.date < b.date ? 1 : -1))
         .slice(0, 8),
@@ -135,7 +142,7 @@ export function DashboardPage() {
                 <AnimatedNumber value={monthTotals.totalIncome} />
               </div>
               <div className="mt-2">
-                <TrendBadge value={monthTotals.incomeChange} />
+                <TrendBadge value={monthTotals.incomeChange} percentage={monthTotals.incomePercentage} />
               </div>
             </div>
             <div className="h-10 w-10 shrink-0 rounded-2xl bg-income/15 ring-1 ring-income/25" />
@@ -150,7 +157,7 @@ export function DashboardPage() {
                 <AnimatedNumber value={monthTotals.totalExpense} />
               </div>
               <div className="mt-2">
-                <TrendBadge value={-monthTotals.expenseChange} />
+                <TrendBadge value={-monthTotals.expenseChange} percentage={monthTotals.expensePercentage} />
               </div>
             </div>
             <div className="h-10 w-10 shrink-0 rounded-2xl bg-expense/15 ring-1 ring-expense/25" />
@@ -168,7 +175,7 @@ export function DashboardPage() {
                 <div className="text-xs text-muted">
                   {monthTotals.balance > 0 ? "Positivo" : monthTotals.balance < 0 ? "Negativo" : "Neutro"}
                 </div>
-                <TrendBadge value={monthTotals.balanceChange} />
+                <TrendBadge value={monthTotals.balanceChange} percentage={monthTotals.balancePercentage} />
               </div>
             </div>
             <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />

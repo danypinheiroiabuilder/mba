@@ -87,6 +87,11 @@ export default function LoginPage() {
         return;
       }
 
+      if (mode === "signup" && password.length < 6) {
+        setMessage("A senha deve ter no mínimo 6 caracteres.");
+        return;
+      }
+
       const { error } =
         mode === "signup"
           ? await supabase.auth.signUp({ email: normalizedEmail, password })

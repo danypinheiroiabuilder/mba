@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useId, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "./Button";
@@ -19,6 +20,21 @@ export function Dialog({
   footer?: React.ReactNode;
   onClose: () => void;
 }) {
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
   return (
     <AnimatePresence>
       {open && (
@@ -28,8 +44,8 @@ export function Dialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <motion.button
-            aria-label="Fechar"
+          <motion.div
+            role="presentation"
             className="absolute inset-0 bg-black/55 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
@@ -38,8 +54,10 @@ export function Dialog({
           />
 
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
+            aria-labelledby={titleId}
             className="relative w-full max-w-lg rounded-3xl border border-border bg-surface p-4 shadow-[0_40px_90px_-60px_rgba(0,0,0,0.9)] sm:p-6"
             initial={{ y: 16, scale: 0.98, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
@@ -49,7 +67,7 @@ export function Dialog({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-sm font-medium text-muted">{label}</div>
-                <div className="text-lg font-semibold tracking-tight text-text">
+                <div id={titleId} className="text-lg font-semibold tracking-tight text-text">
                   {title}
                 </div>
               </div>

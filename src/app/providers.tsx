@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 import { useAuthStore } from "@/stores/auth";
 
@@ -12,6 +13,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
     void useAuthStore.getState().init();
   }, []);
 
-  return children;
+  return (
+    <>
+      {children}
+      <Toaster
+        theme="dark"
+        position="bottom-right"
+        expand
+        richColors
+        closeButton
+      />
+    </>
+  );
 }
 

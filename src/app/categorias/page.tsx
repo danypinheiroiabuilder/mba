@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 
 import type { CashflowType } from "@/lib/types";
 import { categorySchema, type CategoryInput } from "@/lib/types";
@@ -48,15 +49,21 @@ export default function CategoriasPage() {
 
   async function onSubmit(values: CategoryInput) {
     if (!user) return;
-    await addCategory(values, user.id);
-    setOpen(false);
-    form.reset({ name: "", type: values.type, color: values.color });
+    try {
+      await addCategory(values, user.id);
+      toast.success("Categoria criada");
+      setOpen(false);
+      form.reset({ name: "", type: values.type, color: values.color });
+    } catch (error) {
+      toast.error("Erro ao criar categoria");
+    }
   }
 
   async function handleRemoveCategory(id: string) {
     try {
       setDeleteError(null);
       await removeCategoryAction(id);
+      toast.success("Categoria removida");
       setDeleteConfirm(null);
     } catch (e: unknown) {
       const message =
@@ -64,6 +71,7 @@ export default function CategoriasPage() {
           ? e.message
           : "Não foi possível excluir. Se houver lançamentos usando esta categoria, remova/edite os lançamentos primeiro.";
       setDeleteError({ categoryId: id, message });
+      toast.error(message);
     }
   }
 
