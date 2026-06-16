@@ -1,10 +1,6 @@
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { pt } from "date-fns/locale";
 
-export function monthKeyFromISODate(isoDate: string) {
-  return isoDate.slice(0, 7); // YYYY-MM
-}
-
 export function monthLabelFromKey(key: string) {
   // key: YYYY-MM
   const iso = `${key}-01`;

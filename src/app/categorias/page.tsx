@@ -59,7 +59,7 @@ export default function CategoriasPage() {
       toast.success("Categoria criada");
       setOpen(false);
       form.reset({ name: "", type: values.type, color: values.color });
-    } catch (error) {
+    } catch {
       toast.error("Erro ao criar categoria");
     }
   }

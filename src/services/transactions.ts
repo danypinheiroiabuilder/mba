@@ -125,7 +125,7 @@ export async function listMonthlyCashflow(lastNMonths: number): Promise<MonthlyC
     balance: number | null;
   };
 
-  return (data as MonthlyRow[] | null | undefined ?? []).map((row) => {
+  return ((data ?? []) as MonthlyRow[]).map((row) => {
     const monthDate = typeof row.month === "string" ? parseISO(row.month) : new Date(row.month);
     const monthKey = format(monthDate, "yyyy-MM");
     return {

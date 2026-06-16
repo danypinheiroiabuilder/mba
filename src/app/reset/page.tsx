@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
@@ -24,12 +24,6 @@ export default function ResetPage() {
     if (password !== confirm) return false;
     return true;
   }, [password, confirm]);
-
-  useEffect(() => {
-    // se o usuário abrir /reset sem o link de recuperação,
-    // ele não terá sessão e vai ver instruções na UI.
-    if (!ready) return;
-  }, [ready]);
 
   async function updatePassword() {
     setLoading(true);

@@ -121,7 +121,7 @@ export default function TransacoesPage() {
       toast.success(editing ? "Lançamento atualizado" : "Lançamento salvo");
       setOpen(false);
       setEditing(null);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao salvar lançamento");
     }
   }
@@ -163,7 +163,7 @@ export default function TransacoesPage() {
       await removeTransaction(id);
       toast.success("Lançamento removido");
       setDeleteConfirm(null);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao remover lançamento");
     }
   }

@@ -2,7 +2,7 @@
 
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "ghost" | "danger";
+type Variant = "primary" | "ghost";
 
 export function Button({
   className = "",
@@ -17,8 +17,6 @@ export function Button({
       "bg-primary text-bg shadow-[0_12px_28px_-18px_rgba(110,123,255,0.65)] hover:brightness-110",
     ghost:
       "bg-transparent text-text hover:bg-card/60 border border-border backdrop-blur",
-    danger:
-      "bg-expense text-bg shadow-[0_12px_28px_-18px_rgba(255,91,138,0.6)] hover:brightness-110",
   };
 
   return (
