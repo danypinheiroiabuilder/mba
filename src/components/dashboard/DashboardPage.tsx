@@ -107,7 +107,7 @@ export function DashboardPage() {
 
     const incomePercentage = prevIncome > 0 ? ((totalIncome - prevIncome) / prevIncome) * 100 : 0;
     const expensePercentage = prevExpense > 0 ? ((totalExpense - prevExpense) / prevExpense) * 100 : 0;
-    const balancePercentage = prevBalance > 0 ? ((balance - prevBalance) / Math.abs(prevBalance)) * 100 : 0;
+    const balancePercentage = prevBalance !== 0 ? ((balance - prevBalance) / Math.abs(prevBalance)) * 100 : 0;
 
     return {
       totalIncome,

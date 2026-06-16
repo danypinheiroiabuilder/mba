@@ -24,15 +24,40 @@ export function Dialog({
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !dialogRef.current) return;
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onClose();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusableElements = dialogRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusableElements || focusableElements.length === 0) return;
+
+        const focusableArray = Array.from(focusableElements) as HTMLElement[];
+        const activeElement = document.activeElement as HTMLElement;
+        const activeIndex = focusableArray.indexOf(activeElement);
+
+        if (e.shiftKey) {
+          if (activeIndex <= 0) {
+            e.preventDefault();
+            focusableArray[focusableArray.length - 1]?.focus();
+          }
+        } else {
+          if (activeIndex >= focusableArray.length - 1) {
+            e.preventDefault();
+            focusableArray[0]?.focus();
+          }
+        }
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
+    dialogRef.current?.querySelector('button')?.focus();
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
   return (
