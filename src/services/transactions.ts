@@ -12,6 +12,7 @@ type TransactionRow = {
   amount: number;
   date: string; // YYYY-MM-DD
   tag: string | null;
+  payment_method: string | null;
   created_at: string;
 };
 
@@ -24,6 +25,7 @@ function mapTransaction(row: TransactionRow): Transaction {
     amount: Number(row.amount),
     date: row.date,
     tag: row.tag ?? undefined,
+    paymentMethod: row.payment_method ? (row.payment_method as any) : undefined,
     createdAt: row.created_at,
   };
 }
@@ -35,7 +37,7 @@ export async function listTransactionsByMonth(monthKey: string): Promise<Transac
 
   const { data, error } = await supabase
     .from("transactions")
-    .select("id,user_id,description,type,category_id,amount,date,tag,created_at")
+    .select("id,user_id,description,type,category_id,amount,date,tag,payment_method,created_at")
     .gte("date", from)
     .lte("date", to)
     .order("date", { ascending: false })
@@ -62,9 +64,10 @@ export async function upsertTransaction(
         amount: input.amount,
         date: input.date,
         tag,
+        payment_method: input.paymentMethod ?? null,
       })
       .eq("id", editingId)
-      .select("id,user_id,description,type,category_id,amount,date,tag,created_at")
+      .select("id,user_id,description,type,category_id,amount,date,tag,payment_method,created_at")
       .single();
     if (error) throw error;
     return mapTransaction(data as TransactionRow);
@@ -80,8 +83,9 @@ export async function upsertTransaction(
       amount: input.amount,
       date: input.date,
       tag,
+      payment_method: input.paymentMethod ?? null,
     })
-    .select("id,user_id,description,type,category_id,amount,date,tag,created_at")
+    .select("id,user_id,description,type,category_id,amount,date,tag,payment_method,created_at")
     .single();
   if (error) throw error;
   return mapTransaction(data as TransactionRow);

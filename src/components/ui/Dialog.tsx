@@ -7,12 +7,14 @@ import { Button } from "./Button";
 export function Dialog({
   open,
   title,
+  label = "Cadastro",
   children,
   footer,
   onClose,
 }: {
   open: boolean;
   title: string;
+  label?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
   onClose: () => void;
@@ -46,7 +48,7 @@ export function Dialog({
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-sm font-medium text-muted">Cadastro</div>
+                <div className="text-sm font-medium text-muted">{label}</div>
                 <div className="text-lg font-semibold tracking-tight text-text">
                   {title}
                 </div>

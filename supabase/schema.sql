@@ -22,6 +22,7 @@ create table if not exists public.transactions (
   amount numeric(12, 2) not null check (amount > 0),
   date date not null,
   tag text null,
+  payment_method text null check (payment_method in ('pix', 'debito', 'credito', 'dinheiro', 'transferencia', 'outro')),
   created_at timestamptz not null default now()
 );
 

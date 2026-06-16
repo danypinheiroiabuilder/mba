@@ -11,6 +11,7 @@ interface TransactionRowProps {
   onEdit?: (transaction: Transaction) => void;
   onDelete?: (transactionId: string) => void;
   showActions?: boolean;
+  runningBalance?: number;
 }
 
 export function TransactionRow({
@@ -19,6 +20,7 @@ export function TransactionRow({
   onEdit,
   onDelete,
   showActions = true,
+  runningBalance,
 }: TransactionRowProps) {
   return (
     <motion.div
@@ -41,6 +43,7 @@ export function TransactionRow({
         <div className="mt-0.5 text-xs text-muted">
           {c?.name ?? "Sem categoria"} • {t.date}
           {t.tag ? ` • #${t.tag}` : ""}
+          {runningBalance !== undefined && <> • Saldo: {formatBRL(runningBalance)}</>}
         </div>
       </div>
 

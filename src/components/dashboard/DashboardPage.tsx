@@ -24,7 +24,7 @@ import { MonthNavigator } from "@/components/MonthNavigator";
 import { TransactionRow } from "@/components/TransactionRow";
 import { clampMonthKey, monthLabelFromKey, shiftMonthKey } from "@/lib/dates";
 import { formatBRL } from "@/lib/money";
-import { buildCategoryMap, calculateTotals, sumBy } from "@/lib/helpers";
+import { buildCategoryMap, sumBy } from "@/lib/helpers";
 import { useAuthStore } from "@/stores/auth";
 import { useDataStore } from "@/stores/data";
 
@@ -126,7 +126,7 @@ export function DashboardPage() {
         actions={<MonthNavigator monthKey={safeMonthKey} onMonthChange={setMonthKey} />}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -169,6 +169,37 @@ export function DashboardPage() {
                   {monthTotals.balance > 0 ? "Positivo" : monthTotals.balance < 0 ? "Negativo" : "Neutro"}
                 </div>
                 <TrendBadge value={monthTotals.balanceChange} />
+              </div>
+            </div>
+            <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />
+          </div>
+        </Card>
+
+        <Card>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="text-sm font-medium text-muted">Comprometimento</div>
+              <div className="mt-1 text-2xl font-semibold tracking-tight text-text">
+                {monthTotals.totalIncome > 0
+                  ? `${Math.round((monthTotals.totalExpense / monthTotals.totalIncome) * 100)}%`
+                  : "—"}
+              </div>
+              <div className="mt-2">
+                {monthTotals.totalIncome > 0 && (
+                  <span className={`text-xs font-medium ${
+                    monthTotals.totalExpense / monthTotals.totalIncome < 0.7
+                      ? "text-income"
+                      : monthTotals.totalExpense / monthTotals.totalIncome < 0.9
+                        ? "text-[#f4a261]"
+                        : "text-expense"
+                  }`}>
+                    {monthTotals.totalExpense / monthTotals.totalIncome < 0.7
+                      ? "✓ Saudável"
+                      : monthTotals.totalExpense / monthTotals.totalIncome < 0.9
+                        ? "⚠ Atenção"
+                        : "✕ Alto"}
+                  </span>
+                )}
               </div>
             </div>
             <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />
@@ -293,6 +324,62 @@ export function DashboardPage() {
             <div className="h-full w-full animate-pulse rounded-3xl bg-card/25" />
           )}
         </div>
+      </Card>
+
+      <Card className="p-0">
+        <details className="group">
+          <summary className="flex cursor-pointer items-center justify-between border-b border-border px-4 py-4 sm:px-6 hover:bg-card/20">
+            <div>
+              <div className="text-sm font-medium text-muted">Controle Geral</div>
+              <div className="text-base font-semibold tracking-tight text-text">
+                Resumo anual
+              </div>
+            </div>
+            <span className="text-muted transition-transform group-open:rotate-180">▼</span>
+          </summary>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="px-4 py-3 text-left font-medium text-muted sm:px-6">Mês</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted sm:px-6">Receitas</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted sm:px-6">Despesas</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted sm:px-6">Saldo</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted sm:px-6">Comprometimento</th>
+                </tr>
+              </thead>
+              <tbody>
+                {chartData.map((month, idx) => {
+                  const commitment = month.income > 0 ? Math.round((month.expense / month.income) * 100) : 0;
+                  return (
+                    <tr key={month.monthKey} className={idx % 2 === 0 ? "bg-card/20" : ""}>
+                      <td className="px-4 py-3 font-medium text-text sm:px-6">
+                        {monthLabelFromKey(month.monthKey)}
+                      </td>
+                      <td className="px-4 py-3 text-right text-income sm:px-6">
+                        {formatBRL(month.income)}
+                      </td>
+                      <td className="px-4 py-3 text-right text-expense sm:px-6">
+                        {formatBRL(month.expense)}
+                      </td>
+                      <td className={`px-4 py-3 text-right font-medium sm:px-6 ${
+                        month.balance > 0 ? "text-income" : month.balance < 0 ? "text-expense" : "text-muted"
+                      }`}>
+                        {formatBRL(month.balance)}
+                      </td>
+                      <td className={`px-4 py-3 text-right font-medium sm:px-6 ${
+                        commitment < 70 ? "text-income" : commitment < 90 ? "text-[#f4a261]" : "text-expense"
+                      }`}>
+                        {commitment}%
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </details>
       </Card>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

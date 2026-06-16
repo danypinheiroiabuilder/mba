@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export type CashflowType = "income" | "expense";
+export type PaymentMethod = "pix" | "debito" | "credito" | "dinheiro" | "transferencia" | "outro";
 
 export type Category = {
   id: string;
@@ -18,6 +19,7 @@ export type Transaction = {
   amount: number; // always positive
   date: string; // YYYY-MM-DD
   tag?: string;
+  paymentMethod?: PaymentMethod;
   createdAt: string; // ISO
 };
 
@@ -45,6 +47,7 @@ export const transactionSchema = z.object({
     .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a data no formato AAAA-MM-DD"),
   tag: z.string().trim().optional(),
+  paymentMethod: z.enum(["pix", "debito", "credito", "dinheiro", "transferencia", "outro"]).optional(),
 });
 
 export type TransactionInput = z.infer<typeof transactionSchema>;

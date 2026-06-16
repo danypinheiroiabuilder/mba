@@ -66,6 +66,7 @@ export default function TransacoesPage() {
       amount: 0,
       date: format(new Date(), "yyyy-MM-dd"),
       tag: "",
+      paymentMethod: "",
     },
   });
 
@@ -83,6 +84,7 @@ export default function TransacoesPage() {
       amount: 0,
       date: format(new Date(), "yyyy-MM-dd"),
       tag: "",
+      paymentMethod: "",
     });
     setOpen(true);
   }
@@ -96,6 +98,7 @@ export default function TransacoesPage() {
       amount: t.amount,
       date: t.date,
       tag: t.tag ?? "",
+      paymentMethod: t.paymentMethod ?? "",
     });
     setOpen(true);
   }
@@ -124,6 +127,21 @@ export default function TransacoesPage() {
   }, [tx, filterCategoryId, filterTag]);
 
   const totals = useMemo(() => calculateTotals(filteredTx), [filteredTx]);
+
+  const runningBalances = useMemo(() => {
+    const balanceMap = new Map<string, number>();
+    let accumulated = 0;
+
+    filteredTx
+      .slice()
+      .sort((a, b) => (a.date < b.date ? -1 : 1))
+      .forEach((t) => {
+        accumulated += t.type === "income" ? t.amount : -t.amount;
+        balanceMap.set(t.id, accumulated);
+      });
+
+    return balanceMap;
+  }, [filteredTx]);
 
   async function removeTx(id: string) {
     await removeTransaction(id);
@@ -210,6 +228,7 @@ export default function TransacoesPage() {
                   category={categoryById.get(t.categoryId)}
                   onEdit={openEdit}
                   onDelete={setDeleteConfirm}
+                  runningBalance={runningBalances.get(t.id)}
                 />
               ))
           )}
@@ -311,6 +330,20 @@ export default function TransacoesPage() {
             <div className="text-xs font-medium text-muted">Tag (opcional)</div>
             <Input placeholder="Ex.: mercado" {...form.register("tag")} />
             <FieldError message={form.formState.errors.tag?.message} />
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-xs font-medium text-muted">Forma de pagamento (opcional)</div>
+            <Select {...form.register("paymentMethod")}>
+              <option value="">Selecione...</option>
+              <option value="pix">Pix</option>
+              <option value="debito">Débito</option>
+              <option value="credito">Crédito</option>
+              <option value="dinheiro">Dinheiro</option>
+              <option value="transferencia">Transferência</option>
+              <option value="outro">Outro</option>
+            </Select>
+            <FieldError message={form.formState.errors.paymentMethod?.message} />
           </div>
         </form>
       </Dialog>
