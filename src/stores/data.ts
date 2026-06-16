@@ -41,6 +41,14 @@ type DataState = {
   removeTransaction: (id: string) => Promise<void>;
 };
 
+function extractMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return fallback;
+}
+
 export const useDataStore = create<DataState>((set, get) => ({
   categories: [],
   categoriesLoading: false,
@@ -61,7 +69,7 @@ export const useDataStore = create<DataState>((set, get) => ({
       const categories = await listCategories();
       set({ categories, categoriesError: null });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load categories";
+      const message = extractMessage(error, "Failed to load categories");
       set({ categoriesError: message });
     } finally {
       set({ categoriesLoading: false });
@@ -74,7 +82,7 @@ export const useDataStore = create<DataState>((set, get) => ({
       const transactions = await listTransactionsByMonth(monthKey);
       set({ transactions, transactionsError: null });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load transactions";
+      const message = extractMessage(error, "Failed to load transactions");
       set({ transactionsError: message });
     } finally {
       set({ transactionsLoading: false });
@@ -87,7 +95,7 @@ export const useDataStore = create<DataState>((set, get) => ({
       const cashflow12m = await listMonthlyCashflow(12);
       set({ cashflow12m, cashflowError: null });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load cashflow";
+      const message = extractMessage(error, "Failed to load cashflow");
       set({ cashflowError: message });
     } finally {
       set({ cashflowLoading: false });
