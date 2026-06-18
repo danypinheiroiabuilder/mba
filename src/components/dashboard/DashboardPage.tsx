@@ -237,7 +237,7 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div className="h-[380px] px-2 pb-4 pt-4 sm:px-6">
+        <div className="flex h-[380px] flex-col px-2 pb-4 pt-4 sm:px-6">
           {mounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData} margin={{ left: 8, right: 8, top: 20, bottom: 0 }}>
