@@ -34,29 +34,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
 
-    try {
-      const timeoutPromise = new Promise<{ data: { session: null }; error: Error }>((resolve) =>
-        setTimeout(
-          () => resolve({ data: { session: null }, error: new Error("getSession timeout") }),
-          8000
-        )
-      );
-      const { data, error } = await Promise.race([supabase.auth.getSession(), timeoutPromise]);
-
-      if (error) throw error;
-      set({ session: data.session ?? null, user: data.session?.user ?? null, ready: true, error: null, configOk: true });
-
-      // garante apenas um listener ativo mesmo em HMR / StrictMode
-      _unsubscribe?.();
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        set({ session: session ?? null, user: session?.user ?? null, ready: true });
-      });
-      _unsubscribe = () => subscription.unsubscribe();
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to initialize auth";
-      console.error("[Auth] Init error:", message, e);
-      set({ ready: true, error: message, configOk: false });
-    }
+    _unsubscribe?.();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
+    });
+    _unsubscribe = () => subscription.unsubscribe();
   },
 
   destroy: () => {
