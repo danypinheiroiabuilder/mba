@@ -212,8 +212,14 @@ export default function TransacoesPage() {
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Filtrar por categoria</div>
-            <Select value={filterCategoryId} onChange={(e) => setFilterCategoryId(e.target.value)}>
+            <label htmlFor="filter-category" className="text-xs font-medium text-muted">
+              Filtrar por categoria
+            </label>
+            <Select
+              id="filter-category"
+              value={filterCategoryId}
+              onChange={(e) => setFilterCategoryId(e.target.value)}
+            >
               <option value="">Todas</option>
               {allCategories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -223,8 +229,11 @@ export default function TransacoesPage() {
             </Select>
           </div>
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Buscar por tag</div>
+            <label htmlFor="filter-tag" className="text-xs font-medium text-muted">
+              Buscar por tag
+            </label>
             <Input
+              id="filter-tag"
               placeholder="Ex.: mercado"
               value={filterTag}
               onChange={(e) => setFilterTag(e.target.value)}
@@ -284,15 +293,24 @@ export default function TransacoesPage() {
       >
         <form className="space-y-4">
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Descrição</div>
-            <Input placeholder="Ex.: Compra no mercado" {...form.register("description")} />
+            <label htmlFor="description" className="text-xs font-medium text-muted">
+              Descrição
+            </label>
+            <Input
+              id="description"
+              placeholder="Ex.: Compra no mercado"
+              {...form.register("description")}
+            />
             <FieldError message={form.formState.errors.description?.message} />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Tipo</div>
+              <label htmlFor="type" className="text-xs font-medium text-muted">
+                Tipo
+              </label>
               <Select
+                id="type"
                 {...form.register("type")}
                 onChange={(e) => {
                   form.setValue(
@@ -310,16 +328,20 @@ export default function TransacoesPage() {
             </div>
 
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Data</div>
-              <Input type="date" {...form.register("date")} />
+              <label htmlFor="date" className="text-xs font-medium text-muted">
+                Data
+              </label>
+              <Input id="date" type="date" {...form.register("date")} />
               <FieldError message={form.formState.errors.date?.message} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Categoria</div>
-              <Select {...form.register("categoryId")}>
+              <label htmlFor="categoryId" className="text-xs font-medium text-muted">
+                Categoria
+              </label>
+              <Select id="categoryId" {...form.register("categoryId")}>
                 <option value="">Selecione...</option>
                 {categoriesForType.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -337,8 +359,11 @@ export default function TransacoesPage() {
             </div>
 
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Valor</div>
+              <label htmlFor="amount" className="text-xs font-medium text-muted">
+                Valor
+              </label>
               <Input
+                id="amount"
                 type="number"
                 step="0.01"
                 inputMode="decimal"
@@ -349,14 +374,18 @@ export default function TransacoesPage() {
           </div>
 
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Tag (opcional)</div>
-            <Input placeholder="Ex.: mercado" {...form.register("tag")} />
+            <label htmlFor="tag" className="text-xs font-medium text-muted">
+              Tag (opcional)
+            </label>
+            <Input id="tag" placeholder="Ex.: mercado" {...form.register("tag")} />
             <FieldError message={form.formState.errors.tag?.message} />
           </div>
 
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Forma de pagamento (opcional)</div>
-            <Select {...form.register("paymentMethod")}>
+            <label htmlFor="paymentMethod" className="text-xs font-medium text-muted">
+              Forma de pagamento (opcional)
+            </label>
+            <Select id="paymentMethod" {...form.register("paymentMethod")}>
               <option value="">Selecione...</option>
               {PAYMENT_METHODS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>

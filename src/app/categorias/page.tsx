@@ -133,6 +133,7 @@ export default function CategoriasPage() {
                         <Button
                           variant="ghost"
                           className="px-3"
+                          aria-label={`Excluir categoria: ${c.name}`}
                           onClick={() => {
                             setDeleteConfirm(c.id);
                             setDeleteError(null);
@@ -182,7 +183,11 @@ export default function CategoriasPage() {
       >
         <div className="space-y-3">
           {deleteError && deleteError.categoryId === deleteConfirm && (
-            <div className="rounded-2xl border border-expense/30 bg-expense/10 p-3 text-sm text-expense">
+            <div
+              role="alert"
+              aria-live="polite"
+              className="rounded-2xl border border-expense/30 bg-expense/10 p-3 text-sm text-expense"
+            >
               {deleteError.message}
             </div>
           )}
@@ -213,15 +218,23 @@ export default function CategoriasPage() {
       >
         <form className="space-y-4">
           <div className="space-y-1">
-            <div className="text-xs font-medium text-muted">Nome</div>
-            <Input placeholder="Ex.: Alimentação" {...form.register("name")} />
+            <label htmlFor="name" className="text-xs font-medium text-muted">
+              Nome
+            </label>
+            <Input
+              id="name"
+              placeholder="Ex.: Alimentação"
+              {...form.register("name")}
+            />
             <FieldError message={form.formState.errors.name?.message} />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Tipo</div>
-              <Select {...form.register("type")}>
+              <label htmlFor="type" className="text-xs font-medium text-muted">
+                Tipo
+              </label>
+              <Select id="type" {...form.register("type")}>
                 <option value="income">Receita</option>
                 <option value="expense">Despesa</option>
               </Select>
@@ -229,18 +242,23 @@ export default function CategoriasPage() {
             </div>
 
             <div className="space-y-1">
-              <div className="text-xs font-medium text-muted">Cor</div>
+              <label className="text-xs font-medium text-muted">
+                Cor
+              </label>
               <div className="flex items-center gap-2">
                 <Input
                   type="color"
                   className="h-10 w-14 p-1"
                   value={color}
                   onChange={(e) => form.setValue("color", e.target.value, { shouldValidate: true })}
+                  aria-label="Seletor de cor"
                 />
                 <Input
+                  id="colorHex"
                   placeholder="#6E7BFF"
                   value={color}
                   onChange={(e) => form.setValue("color", e.target.value, { shouldValidate: true })}
+                  aria-label="Código de cor HEX"
                 />
               </div>
               <FieldError message={form.formState.errors.color?.message} />
