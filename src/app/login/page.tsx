@@ -232,6 +232,7 @@ export default function LoginPage() {
               {mode === "forgot" ? (
                 <div className="space-y-3">
                   <Button
+                    type="submit"
                     variant="primary"
                     className="w-full"
                     disabled={loading || !configOk}
@@ -248,6 +249,7 @@ export default function LoginPage() {
                 </div>
               ) : (
                 <Button
+                  type="submit"
                   variant="primary"
                   className="w-full"
                   disabled={loading || !configOk}
