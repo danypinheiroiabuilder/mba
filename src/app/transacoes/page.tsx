@@ -176,7 +176,7 @@ export default function TransacoesPage() {
         subtitle={monthLabelFromKey(safeMonthKey)}
         actions={
           <div className="flex flex-wrap gap-2">
-            <MonthNavigator monthKey={safeMonthKey} onMonthChange={setMonthKey} />
+            <MonthNavigator monthKey={safeMonthKey} setMonthKey={setMonthKey} />
             <Button variant="primary" onClick={openNew}>
               Novo lançamento
             </Button>

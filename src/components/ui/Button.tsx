@@ -7,6 +7,7 @@ type Variant = "primary" | "ghost";
 export function Button({
   className = "",
   variant = "primary",
+  type = "button",
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
   const base =
@@ -21,6 +22,7 @@ export function Button({
 
   return (
     <button
+      type={type}
       {...props}
       className={[base, variants[variant], className].join(" ")}
     />

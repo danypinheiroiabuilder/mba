@@ -57,7 +57,14 @@ export function Dialog({
     }
 
     window.addEventListener("keydown", handleKeyDown);
-    dialogRef.current?.querySelector('button')?.focus();
+
+    const focusableElements = dialogRef.current?.querySelectorAll(
+      'input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusableElements && focusableElements.length > 0) {
+      (focusableElements[0] as HTMLElement)?.focus();
+    }
+
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
   return (

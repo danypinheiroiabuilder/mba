@@ -28,6 +28,14 @@ export function AnimatedNumber({
     return () => controls.stop();
   }, [value]);
 
-  return <span className={className}>{formatBRL(display)}</span>;
+  return (
+    <span
+      className={className}
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {formatBRL(display)}
+    </span>
+  );
 }
 

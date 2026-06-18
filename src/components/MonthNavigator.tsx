@@ -6,27 +6,35 @@ import { shiftMonthKey } from "@/lib/dates";
 
 interface MonthNavigatorProps {
   monthKey: string;
-  onMonthChange: (monthKey: string) => void;
+  setMonthKey: (monthKey: string) => void;
 }
 
-export function MonthNavigator({ monthKey, onMonthChange }: MonthNavigatorProps) {
+export function MonthNavigator({ monthKey, setMonthKey }: MonthNavigatorProps) {
+  const currentMonth = format(new Date(), "yyyy-MM");
+  const nextMonthKey = shiftMonthKey(monthKey, 1);
+  const isNextDisabled = nextMonthKey > currentMonth;
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Button
         variant="ghost"
-        onClick={() => onMonthChange(shiftMonthKey(monthKey, -1))}
+        aria-label="Navegar para o mês anterior"
+        onClick={() => setMonthKey(shiftMonthKey(monthKey, -1))}
       >
         Mês anterior
       </Button>
       <Button
         variant="ghost"
-        onClick={() => onMonthChange(format(new Date(), "yyyy-MM"))}
+        aria-label="Retornar ao mês atual"
+        onClick={() => setMonthKey(currentMonth)}
       >
         Hoje
       </Button>
       <Button
         variant="ghost"
-        onClick={() => onMonthChange(shiftMonthKey(monthKey, 1))}
+        disabled={isNextDisabled}
+        aria-label={isNextDisabled ? "Próximo mês desabilitado (futuro)" : "Navegar para o próximo mês"}
+        onClick={() => setMonthKey(nextMonthKey)}
       >
         Próximo mês
       </Button>

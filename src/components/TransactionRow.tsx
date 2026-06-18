@@ -82,6 +82,7 @@ export const TransactionRow = memo(function TransactionRow({
               <Button
                 variant="ghost"
                 className="px-2 sm:px-3"
+                aria-label={`Editar: ${t.description}`}
                 onClick={() => onEdit(t)}
               >
                 Editar
@@ -91,6 +92,7 @@ export const TransactionRow = memo(function TransactionRow({
               <Button
                 variant="ghost"
                 className="px-2 sm:px-3"
+                aria-label={`Excluir: ${t.description}`}
                 onClick={() => onDelete(t.id)}
               >
                 Excluir
