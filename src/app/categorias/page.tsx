@@ -33,8 +33,9 @@ export default function CategoriasPage() {
   const [deleteError, setDeleteError] = useState<DeleteError>(null);
 
   useEffect(() => {
+    if (!user) return;
     void refreshCategories();
-  }, [refreshCategories]);
+  }, [user, refreshCategories]);
 
   useEffect(() => {
     if (categoriesError) toast.error(`Erro ao carregar categorias: ${categoriesError}`);

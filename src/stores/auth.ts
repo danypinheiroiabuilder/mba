@@ -4,6 +4,7 @@ import { create } from "zustand";
 import type { Session, User } from "@supabase/supabase-js";
 
 import { getSupabase } from "@/services/supabase/client";
+import { useDataStore } from "@/stores/data";
 
 type AuthState = {
   ready: boolean;
@@ -36,6 +37,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     _unsubscribe?.();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const previousUserId = get().user?.id ?? null;
+      const nextUserId = session?.user?.id ?? null;
+      if (previousUserId !== nextUserId) {
+        useDataStore.getState().resetData();
+      }
       set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
     });
     _unsubscribe = () => subscription.unsubscribe();

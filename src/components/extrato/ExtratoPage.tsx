@@ -9,19 +9,22 @@ import { MonthNavigator } from "@/components/MonthNavigator";
 import { TransactionRow } from "@/components/TransactionRow";
 import { clampMonthKey, monthLabelFromKey } from "@/lib/dates";
 import { buildCategoryMap } from "@/lib/helpers";
+import { useAuthStore } from "@/stores/auth";
 import { useDataStore } from "@/stores/data";
 
 export function ExtratoPage() {
   const [monthKey, setMonthKey] = useState(() => format(new Date(), "yyyy-MM"));
   const safeMonthKey = clampMonthKey(monthKey);
 
+  const { user } = useAuthStore();
   const { categories, transactions, transactionsError, refreshCategories, refreshTransactions } =
     useDataStore();
 
   useEffect(() => {
+    if (!user) return;
     void refreshCategories();
     void refreshTransactions(safeMonthKey);
-  }, [safeMonthKey, refreshCategories, refreshTransactions]);
+  }, [user, safeMonthKey, refreshCategories, refreshTransactions]);
 
   const categoryById = useMemo(() => buildCategoryMap(categories), [categories]);
 

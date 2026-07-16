@@ -39,6 +39,8 @@ type DataState = {
     editingId?: string,
   ) => Promise<void>;
   removeTransaction: (id: string) => Promise<void>;
+
+  resetData: () => void;
 };
 
 function extractMessage(error: unknown, fallback: string): string {
@@ -124,6 +126,18 @@ export const useDataStore = create<DataState>((set, get) => ({
     const monthKey = get().monthKey;
     if (monthKey) await get().refreshTransactions(monthKey);
     await get().refreshCashflow12m();
+  },
+
+  resetData: () => {
+    set({
+      categories: [],
+      categoriesError: null,
+      monthKey: null,
+      transactions: [],
+      transactionsError: null,
+      cashflow12m: [],
+      cashflowError: null,
+    });
   },
 }));
 

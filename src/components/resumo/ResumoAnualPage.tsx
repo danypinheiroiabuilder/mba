@@ -19,6 +19,7 @@ import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { clampMonthKey, monthLabelFromKey, shiftMonthKey } from "@/lib/dates";
 import { formatBRL } from "@/lib/money";
+import { useAuthStore } from "@/stores/auth";
 import { useDataStore } from "@/stores/data";
 
 type CommitmentLevel = { label: string; color: string };
@@ -39,11 +40,13 @@ export function ResumoAnualPage() {
     return () => clearTimeout(t);
   }, []);
 
+  const { user } = useAuthStore();
   const { cashflow12m, cashflowError, refreshCashflow12m } = useDataStore();
 
   useEffect(() => {
+    if (!user) return;
     void refreshCashflow12m();
-  }, [refreshCashflow12m]);
+  }, [user, refreshCashflow12m]);
 
   const chartData = useMemo(() => {
     const months = Array.from({ length: 12 }, (_, i) =>

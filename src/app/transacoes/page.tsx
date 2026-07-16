@@ -45,12 +45,14 @@ export default function TransacoesPage() {
   } = useDataStore();
 
   useEffect(() => {
+    if (!user) return;
     void refreshCategories();
-  }, [refreshCategories]);
+  }, [user, refreshCategories]);
 
   useEffect(() => {
+    if (!user) return;
     void refreshTransactions(safeMonthKey);
-  }, [refreshTransactions, safeMonthKey]);
+  }, [user, refreshTransactions, safeMonthKey]);
 
   useEffect(() => {
     if (categoriesError) toast.error(`Erro ao carregar categorias: ${categoriesError}`);
