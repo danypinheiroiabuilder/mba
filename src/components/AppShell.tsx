@@ -78,7 +78,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <div className="rounded-3xl border border-border bg-surface/70 p-4 backdrop-blur">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium text-muted">Fluxo</div>
-                    <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(110,123,255,0.12)]" />
+                    <div
+                      className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(110,123,255,0.12)]"
+                      role="status"
+                      aria-label="Sessão conectada"
+                      title="Sessão conectada"
+                    />
                   </div>
                   <div className="mt-1 text-lg font-semibold tracking-tight text-text">
                     Caixa mensal

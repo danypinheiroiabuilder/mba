@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
+import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
 import type { CashflowType } from "@/lib/types";
 import { categorySchema, type CategoryInput } from "@/lib/types";
@@ -103,12 +104,27 @@ export default function CategoriasPage() {
           return (
             <Card key={t}>
               <div className="space-y-2">
-                <div>
-                  <div className="text-sm font-medium text-muted">
-                    {t === "income" ? "Entrada" : "Saída"}
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ring-1 ${
+                      t === "income"
+                        ? "bg-income/15 ring-income/25"
+                        : "bg-expense/15 ring-expense/25"
+                    }`}
+                  >
+                    {t === "income" ? (
+                      <ArrowUpCircle className="h-4 w-4 text-income" strokeWidth={1.75} aria-hidden="true" />
+                    ) : (
+                      <ArrowDownCircle className="h-4 w-4 text-expense" strokeWidth={1.75} aria-hidden="true" />
+                    )}
                   </div>
-                  <div className="text-base font-semibold tracking-tight text-text">
-                    {typeLabel(t)}
+                  <div>
+                    <div className="text-sm font-medium text-muted">
+                      {t === "income" ? "Entrada" : "Saída"}
+                    </div>
+                    <div className="text-base font-semibold tracking-tight text-text">
+                      {typeLabel(t)}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-3 space-y-2">

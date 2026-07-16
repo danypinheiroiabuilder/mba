@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
+import { ArrowUpCircle, ArrowDownCircle, Wallet, ListPlus } from "lucide-react";
 
 import type { Transaction } from "@/lib/types";
 import { transactionSchema, type TransactionInput, PAYMENT_METHODS } from "@/lib/types";
@@ -188,25 +189,51 @@ export default function TransacoesPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
-          <div className="text-sm font-medium text-muted">Receitas</div>
-          <div className="mt-1 text-xl font-semibold text-income">{formatBRL(totals.income)}</div>
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-sm font-medium text-muted">Receitas</div>
+              <div className="mt-1 text-xl font-semibold text-income">{formatBRL(totals.income)}</div>
+            </div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-income/15 ring-1 ring-income/25">
+              <ArrowUpCircle className="h-4 w-4 text-income" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+          </div>
         </Card>
         <Card>
-          <div className="text-sm font-medium text-muted">Despesas</div>
-          <div className="mt-1 text-xl font-semibold text-expense">{formatBRL(totals.expense)}</div>
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-sm font-medium text-muted">Despesas</div>
+              <div className="mt-1 text-xl font-semibold text-expense">{formatBRL(totals.expense)}</div>
+            </div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-expense/15 ring-1 ring-expense/25">
+              <ArrowDownCircle className="h-4 w-4 text-expense" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+          </div>
         </Card>
         <Card>
-          <div className="text-sm font-medium text-muted">Saldo</div>
-          <div className="mt-1 text-xl font-semibold text-text">{formatBRL(totals.balance)}</div>
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-sm font-medium text-muted">Saldo</div>
+              <div className="mt-1 text-xl font-semibold text-text">{formatBRL(totals.balance)}</div>
+            </div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+              <Wallet className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+          </div>
         </Card>
       </div>
 
       <Card>
         <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-medium text-muted">Lançamentos</div>
-            <div className="text-base font-semibold tracking-tight text-text">
-              Lista do mês
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+              <ListPlus className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+            <div>
+              <div className="text-sm font-medium text-muted">Lançamentos</div>
+              <div className="text-base font-semibold tracking-tight text-text">
+                Lista do mês
+              </div>
             </div>
           </div>
           <div className="text-xs text-muted">{filteredTx.length} itens</div>

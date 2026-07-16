@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
+import { ArrowUpCircle, ArrowDownCircle, Wallet, Gauge } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
@@ -23,11 +24,18 @@ function classifyCommitment(ratio: number): CommitmentLevel {
   return { label: "✕ Alto", color: "text-expense" };
 }
 
-function TrendBadge({ value, percentage }: { value: number; percentage?: number }) {
+function TrendBadge({
+  value,
+  percentage,
+  favorable,
+}: {
+  value: number;
+  percentage?: number;
+  favorable: boolean;
+}) {
   if (value === 0) return <span className="text-xs text-muted">—</span>;
-  const isPositive = value > 0;
-  const symbol = isPositive ? "↑" : "↓";
-  const color = isPositive ? "text-income" : "text-expense";
+  const symbol = value > 0 ? "↑" : "↓";
+  const color = favorable ? "text-income" : "text-expense";
   return (
     <span className={`text-xs font-medium ${color}`}>
       {symbol} {percentage !== undefined ? `${percentage.toFixed(1)}%` : formatBRL(Math.abs(value))}
@@ -152,10 +160,16 @@ export function DashboardPage() {
                 <AnimatedNumber value={monthTotals.totalIncome} />
               </div>
               <div className="mt-2">
-                <TrendBadge value={monthTotals.incomeChange} percentage={monthTotals.incomePercentage} />
+                <TrendBadge
+                  value={monthTotals.incomeChange}
+                  percentage={monthTotals.incomePercentage}
+                  favorable={monthTotals.incomeChange >= 0}
+                />
               </div>
             </div>
-            <div className="h-10 w-10 shrink-0 rounded-2xl bg-income/15 ring-1 ring-income/25" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-income/15 ring-1 ring-income/25">
+              <ArrowUpCircle className="h-4 w-4 text-income" strokeWidth={1.75} aria-hidden="true" />
+            </div>
           </div>
         </Card>
 
@@ -167,10 +181,16 @@ export function DashboardPage() {
                 <AnimatedNumber value={monthTotals.totalExpense} />
               </div>
               <div className="mt-2">
-                <TrendBadge value={-monthTotals.expenseChange} percentage={monthTotals.expensePercentage} />
+                <TrendBadge
+                  value={monthTotals.expenseChange}
+                  percentage={monthTotals.expensePercentage}
+                  favorable={monthTotals.expenseChange <= 0}
+                />
               </div>
             </div>
-            <div className="h-10 w-10 shrink-0 rounded-2xl bg-expense/15 ring-1 ring-expense/25" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-expense/15 ring-1 ring-expense/25">
+              <ArrowDownCircle className="h-4 w-4 text-expense" strokeWidth={1.75} aria-hidden="true" />
+            </div>
           </div>
         </Card>
 
@@ -185,10 +205,16 @@ export function DashboardPage() {
                 <div className="text-xs text-muted">
                   {monthTotals.balance > 0 ? "Positivo" : monthTotals.balance < 0 ? "Negativo" : "Neutro"}
                 </div>
-                <TrendBadge value={monthTotals.balanceChange} percentage={monthTotals.balancePercentage} />
+                <TrendBadge
+                  value={monthTotals.balanceChange}
+                  percentage={monthTotals.balancePercentage}
+                  favorable={monthTotals.balanceChange >= 0}
+                />
               </div>
             </div>
-            <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+              <Wallet className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            </div>
           </div>
         </Card>
 
@@ -202,13 +228,19 @@ export function DashboardPage() {
                   : "—"}
               </div>
               <div className="mt-2">
-                {monthTotals.totalIncome > 0 && (() => {
-                  const c = classifyCommitment(monthTotals.totalExpense / monthTotals.totalIncome);
-                  return <span className={`text-xs font-medium ${c.color}`}>{c.label}</span>;
-                })()}
+                {monthTotals.totalIncome > 0 ? (
+                  (() => {
+                    const c = classifyCommitment(monthTotals.totalExpense / monthTotals.totalIncome);
+                    return <span className={`text-xs font-medium ${c.color}`}>{c.label}</span>;
+                  })()
+                ) : (
+                  <span className="text-xs text-muted">Sem receita no mês</span>
+                )}
               </div>
             </div>
-            <div className="h-10 w-10 shrink-0 rounded-2xl bg-primary/15 ring-1 ring-primary/25" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+              <Gauge className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            </div>
           </div>
         </Card>
       </div>

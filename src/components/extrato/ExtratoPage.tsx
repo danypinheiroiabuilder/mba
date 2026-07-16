@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { BookOpen } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/PageHeader";
@@ -40,10 +41,15 @@ export function ExtratoPage() {
 
       <Card>
         <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-medium text-muted">Lançamentos</div>
-            <div className="text-base font-semibold tracking-tight text-text">
-              Histórico do mês
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+              <BookOpen className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+            <div>
+              <div className="text-sm font-medium text-muted">Lançamentos</div>
+              <div className="text-base font-semibold tracking-tight text-text">
+                Histórico do mês
+              </div>
             </div>
           </div>
           <div className="text-xs text-muted">{transactions.length} itens</div>

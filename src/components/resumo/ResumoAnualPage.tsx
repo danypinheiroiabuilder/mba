@@ -14,6 +14,7 @@ import {
   Legend,
 } from "recharts";
 import { pt } from "date-fns/locale";
+import { BarChart2 } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/PageHeader";
@@ -79,6 +80,9 @@ export function ResumoAnualPage() {
             <div className="text-base font-semibold tracking-tight text-text">
               Últimos 12 meses (linha/coluna)
             </div>
+          </div>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25">
+            <BarChart2 className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
           </div>
         </div>
 
