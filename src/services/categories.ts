@@ -46,6 +46,22 @@ export async function createCategory(input: CategoryInput, userId: string): Prom
   return mapCategory(data as CategoryRow);
 }
 
+export async function updateCategory(id: string, input: CategoryInput): Promise<Category> {
+  const supabase = requireSupabase();
+  const { data, error } = await supabase
+    .from("categories")
+    .update({
+      name: input.name.trim(),
+      type: input.type,
+      color: input.color,
+    })
+    .eq("id", id)
+    .select("id,user_id,name,type,color,created_at")
+    .single();
+  if (error) throw error;
+  return mapCategory(data as CategoryRow);
+}
+
 export async function deleteCategory(id: string): Promise<void> {
   const supabase = requireSupabase();
   const { error } = await supabase.from("categories").delete().eq("id", id);

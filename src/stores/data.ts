@@ -3,7 +3,7 @@
 import { create } from "zustand";
 
 import type { Category, Transaction } from "@/lib/types";
-import { createCategory, deleteCategory, listCategories } from "@/services/categories";
+import { createCategory, deleteCategory, listCategories, updateCategory as updateCategoryService } from "@/services/categories";
 import {
   deleteTransaction,
   listMonthlyCashflow,
@@ -31,6 +31,7 @@ type DataState = {
   refreshCashflow12m: () => Promise<void>;
 
   addCategory: (input: Parameters<typeof createCategory>[0], userId: string) => Promise<void>;
+  updateCategory: (id: string, input: Parameters<typeof createCategory>[0]) => Promise<void>;
   removeCategory: (id: string) => Promise<void>;
 
   saveTransaction: (
@@ -106,6 +107,11 @@ export const useDataStore = create<DataState>((set, get) => ({
 
   addCategory: async (input, userId) => {
     await createCategory(input, userId);
+    await get().refreshCategories();
+  },
+
+  updateCategory: async (id, input) => {
+    await updateCategoryService(id, input);
     await get().refreshCategories();
   },
 

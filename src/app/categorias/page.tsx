@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
-import type { CashflowType } from "@/lib/types";
+import type { CashflowType, Category } from "@/lib/types";
 import { categorySchema, type CategoryInput } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -27,9 +27,11 @@ export default function CategoriasPage() {
     categoriesError,
     refreshCategories,
     addCategory,
+    updateCategory: updateCategoryAction,
     removeCategory: removeCategoryAction,
   } = useDataStore();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Category | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<DeleteError>(null);
 
@@ -54,15 +56,33 @@ export default function CategoriasPage() {
   });
   const color = useWatch({ control: form.control, name: "color" });
 
+  function openNew() {
+    setEditing(null);
+    form.reset({ name: "", type: "expense", color: "#6E7BFF" });
+    setOpen(true);
+  }
+
+  function openEdit(c: Category) {
+    setEditing(c);
+    form.reset({ name: c.name, type: c.type, color: c.color });
+    setOpen(true);
+  }
+
   async function onSubmit(values: CategoryInput) {
     if (!user) return;
     try {
-      await addCategory(values, user.id);
-      toast.success("Categoria criada");
+      if (editing) {
+        await updateCategoryAction(editing.id, values);
+        toast.success("Categoria atualizada");
+      } else {
+        await addCategory(values, user.id);
+        toast.success("Categoria criada");
+      }
       setOpen(false);
+      setEditing(null);
       form.reset({ name: "", type: values.type, color: values.color });
     } catch {
-      toast.error("Erro ao criar categoria");
+      toast.error(editing ? "Erro ao atualizar categoria" : "Erro ao criar categoria");
     }
   }
 
@@ -92,7 +112,7 @@ export default function CategoriasPage() {
         label="Cadastros"
         title="Categorias"
         actions={
-          <Button variant="primary" onClick={() => setOpen(true)}>
+          <Button variant="primary" onClick={openNew}>
             Nova categoria
           </Button>
         }
@@ -147,17 +167,27 @@ export default function CategoriasPage() {
                             {c.name}
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          className="px-3"
-                          aria-label={`Excluir categoria: ${c.name}`}
-                          onClick={() => {
-                            setDeleteConfirm(c.id);
-                            setDeleteError(null);
-                          }}
-                        >
-                          Excluir
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            className="px-3"
+                            aria-label={`Editar categoria: ${c.name}`}
+                            onClick={() => openEdit(c)}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            className="px-3"
+                            aria-label={`Excluir categoria: ${c.name}`}
+                            onClick={() => {
+                              setDeleteConfirm(c.id);
+                              setDeleteError(null);
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -216,11 +246,21 @@ export default function CategoriasPage() {
 
       <Dialog
         open={open}
-        title="Categoria"
-        onClose={() => setOpen(false)}
+        title={editing ? "Editar categoria" : "Categoria"}
+        onClose={() => {
+          setOpen(false);
+          setEditing(null);
+        }}
         footer={
           <div className="flex gap-2">
-            <Button variant="ghost" type="button" onClick={() => setOpen(false)}>
+            <Button
+              variant="ghost"
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setEditing(null);
+              }}
+            >
               Cancelar
             </Button>
             <Button
