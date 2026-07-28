@@ -94,9 +94,9 @@ from public.transactions
 where user_id = auth.uid()
 group by 1, 2;
 
--- Policy para view
-alter view public.monthly_cashflow owner to postgres;
-drop policy if exists "monthly_cashflow_select_own" on public.monthly_cashflow;
-create policy "monthly_cashflow_select_own" on public.monthly_cashflow
-for select using (user_id = auth.uid());
+-- FK composta: garante que category_id pertence ao mesmo usuário da transação
+alter table public.categories add constraint categories_id_user_unique unique (id, user_id);
+alter table public.transactions
+  add constraint transactions_category_user_fk
+  foreign key (category_id, user_id) references public.categories(id, user_id);
 
