@@ -29,27 +29,44 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   init: async () => {
     if (get().ready) return;
 
-    try {
-      const supabase = getSupabase();
-      if (!supabase) {
-        set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
-        return;
-      }
+    const maxRetries = 3;
+    let retryCount = 0;
 
-      _unsubscribe?.();
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        const previousUserId = get().user?.id ?? null;
-        const nextUserId = session?.user?.id ?? null;
-        if (previousUserId !== nextUserId) {
-          useDataStore.getState().resetData();
+    const attemptInit = async () => {
+      try {
+        const supabase = getSupabase();
+        if (!supabase) {
+          set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
+          return;
         }
-        set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
-      });
-      _unsubscribe = () => subscription.unsubscribe();
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to initialize authentication";
-      set({ ready: true, session: null, user: null, configOk: false, error: errorMsg });
-    }
+
+        _unsubscribe?.();
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          const previousUserId = get().user?.id ?? null;
+          const nextUserId = session?.user?.id ?? null;
+          if (previousUserId !== nextUserId) {
+            useDataStore.getState().resetData();
+          }
+          set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
+        });
+        _unsubscribe = () => subscription.unsubscribe();
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to initialize authentication";
+
+        if ((err instanceof Error && err.message.includes("Connection")) || errorMsg.includes("Connection")) {
+          if (retryCount < maxRetries) {
+            retryCount++;
+            console.warn(`Connection failed, retrying (${retryCount}/${maxRetries})...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+            return attemptInit();
+          }
+        }
+
+        set({ ready: true, session: null, user: null, configOk: false, error: errorMsg });
+      }
+    };
+
+    return attemptInit();
   },
 
   destroy: () => {
