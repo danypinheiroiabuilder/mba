@@ -1,8 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
-const isProduction = process.env.NODE_ENV === "production";
-
 const securityHeaders = [
   {
     key: "X-Frame-Options",
@@ -28,16 +26,10 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      // Produção: sem unsafe-eval; dev: com unsafe-inline/unsafe-eval para HMR
-      isProduction
-        ? "script-src 'self' 'nonce-placeholder'"
-        : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       // Supabase API + Realtime
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-      // Produção: sem unsafe-inline em style-src; dev: com unsafe-inline para HMR
-      isProduction
-        ? "style-src 'self' https://fonts.googleapis.com"
-        : "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob:",
       "frame-ancestors 'none'",
