@@ -29,22 +29,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   init: async () => {
     if (get().ready) return;
 
-    const supabase = getSupabase();
-    if (!supabase) {
-      set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
-      return;
-    }
-
-    _unsubscribe?.();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const previousUserId = get().user?.id ?? null;
-      const nextUserId = session?.user?.id ?? null;
-      if (previousUserId !== nextUserId) {
-        useDataStore.getState().resetData();
+    try {
+      const supabase = getSupabase();
+      if (!supabase) {
+        set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
+        return;
       }
-      set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
-    });
-    _unsubscribe = () => subscription.unsubscribe();
+
+      _unsubscribe?.();
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const previousUserId = get().user?.id ?? null;
+        const nextUserId = session?.user?.id ?? null;
+        if (previousUserId !== nextUserId) {
+          useDataStore.getState().resetData();
+        }
+        set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
+      });
+      _unsubscribe = () => subscription.unsubscribe();
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to initialize authentication";
+      set({ ready: true, session: null, user: null, configOk: false, error: errorMsg });
+    }
   },
 
   destroy: () => {
