@@ -7,6 +7,9 @@ const PRIVATE_ROUTES = ["/", "/transacoes", "/categorias", "/extrato", "/resumo"
 const PUBLIC_ONLY_ROUTES = ["/login", "/reset"];
 
 export async function middleware(request: NextRequest) {
+  const isRsc = request.headers.get("rsc") === "1";
+  if (isRsc) return NextResponse.next({ request });
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
