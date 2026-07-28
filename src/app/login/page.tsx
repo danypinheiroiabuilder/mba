@@ -22,8 +22,11 @@ export default function LoginPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!configOk) {
+      console.error("Supabase not configured:", { ready, configOk });
+    }
     if (ready && user) router.replace("/");
-  }, [ready, user, router]);
+  }, [ready, user, configOk, router]);
 
   function go(next: "signin" | "signup" | "forgot") {
     setMessage(null);

@@ -29,44 +29,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   init: async () => {
     if (get().ready) return;
 
-    const maxRetries = 3;
-    let retryCount = 0;
-
-    const attemptInit = async () => {
-      try {
-        const supabase = getSupabase();
-        if (!supabase) {
-          set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
-          return;
-        }
-
-        _unsubscribe?.();
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-          const previousUserId = get().user?.id ?? null;
-          const nextUserId = session?.user?.id ?? null;
-          if (previousUserId !== nextUserId) {
-            useDataStore.getState().resetData();
-          }
-          set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
-        });
-        _unsubscribe = () => subscription.unsubscribe();
-      } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Failed to initialize authentication";
-
-        if ((err instanceof Error && err.message.includes("Connection")) || errorMsg.includes("Connection")) {
-          if (retryCount < maxRetries) {
-            retryCount++;
-            console.warn(`Connection failed, retrying (${retryCount}/${maxRetries})...`);
-            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
-            return attemptInit();
-          }
-        }
-
-        set({ ready: true, session: null, user: null, configOk: false, error: errorMsg });
+    try {
+      const supabase = getSupabase();
+      if (!supabase) {
+        set({ ready: true, session: null, user: null, configOk: false, error: "Supabase not configured" });
+        return;
       }
-    };
 
-    return attemptInit();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+
+      set({ session: session ?? null, user: session?.user ?? null, ready: true, error: null, configOk: true });
+
+      _unsubscribe?.();
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+        const previousUserId = get().user?.id ?? null;
+        const nextUserId = newSession?.user?.id ?? null;
+        if (previousUserId !== nextUserId) {
+          useDataStore.getState().resetData();
+        }
+        set({ session: newSession ?? null, user: newSession?.user ?? null, error: null, configOk: true });
+      });
+      _unsubscribe = () => subscription.unsubscribe();
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to initialize authentication";
+      console.error("Auth init failed:", errorMsg);
+      set({ ready: true, session: null, user: null, configOk: false, error: errorMsg });
+    }
   },
 
   destroy: () => {
