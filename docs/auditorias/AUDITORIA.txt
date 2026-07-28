@@ -1,0 +1,147 @@
+AUDITORIA — dashboard-de-fluxo
+Data: 2026-07-15
+
+Escopo
+- código
+- arquitetura
+- design/UX
+- acessibilidade
+- segurança
+- autenticação
+- banco de dados
+- permissões (RLS)
+- performance
+- testes
+- documentação
+- lógica de negócio
+- riscos para produção
+- riscos para venda/uso por terceiros
+
+
+O que está bom
+- Base técnica moderna e coerente: Next.js 16.2.7 + React 19, TypeScript strict, ESLint core-web-vitals, Tailwind.
+- Supabase adequado para multiusuário: RLS por usuário em categories e transactions com policies para CRUD.
+- Validação de formulário: zod + react-hook-form em lançamentos e categorias (src/lib/types.ts, src/app/transacoes/page.tsx, src/app/categorias/page.tsx).
+- UX: feedback com sonner, estados vazios claros, navegação com aria-label e aria-current em pontos importantes.
+- CI mínima essencial: tsc --noEmit + next build com secrets de Supabase (.github/workflows/ci.yml).
+
+
+Problemas encontrados (por que importa, como corrigir, prioridade, arquivos prováveis)
+
+1) Middleware/rotas protegidas inconsistentes (risco de acesso indevido)
+Por que importa
+- A proteção depende de lista manual de rotas.
+- Existe um middleware na raiz que não aplica auth.
+- Rotas como /extrato e /resumo não estão na lista de rotas privadas do middleware de auth.
+
+Evidência
+- middleware.ts (raiz) apenas chama NextResponse.next():
+  Arquivo: middleware.ts
+  Trecho:
+    import { NextResponse } from "next/server";
+    export function middleware() {
+      return NextResponse.next();
+    }
+
+- src/middleware.ts define listas manuais:
+  Arquivo: src/middleware.ts
+  PRIVATE_ROUTES = ["/", "/transacoes", "/categorias"];
+  PUBLIC_ONLY_ROUTES = ["/login", "/reset"];
+
+Como corrigir
+- Manter apenas um middleware efetivo (raiz ou src) e remover/neutralizar o outro para evitar ambiguidade.
+- Tornar a proteção “segura por padrão”: tudo é privado exceto /login e /reset (e assets/_next/*).
+  Alternativa mínima: incluir /extrato e /resumo em PRIVATE_ROUTES.
+
+Prioridade: Crítico
+Arquivos prováveis envolvidos: middleware.ts, src/middleware.ts, rotas em src/app/**
+
+
+2) CSP atual permite unsafe-inline e unsafe-eval (aumenta risco de XSS)
+Por que importa
+- Com sessão persistida no browser (Supabase), XSS pode expor dados/sessão.
+- unsafe-inline e unsafe-eval reduzem drasticamente a efetividade da CSP.
+
+Evidência
+- next.config.ts:
+  Content-Security-Policy inclui:
+    script-src 'self' 'unsafe-inline' 'unsafe-eval'
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com
+
+Como corrigir
+- Diferenciar CSP por ambiente:
+  - development: permissiva apenas no necessário para dev tooling
+  - production: remover unsafe-eval e reduzir/evitar unsafe-inline (nonce/hash se precisar)
+- Se possível, restringir connect-src para o host exato do Supabase (evitar *.supabase.co).
+
+Prioridade: Alto
+Arquivos prováveis envolvidos: next.config.ts
+
+
+3) Integridade “categoria pertence ao usuário” não é garantida no banco (multi-tenancy)
+Por que importa
+- O FK atual garante category_id -> categories(id), mas não garante que a categoria é do mesmo user_id da transação.
+- Mesmo com RLS, isso é uma brecha de integridade e pode virar bug/edge-case perigoso em relatórios/joins futuros.
+
+Evidência
+- supabase/schema.sql:
+  transactions.category_id references public.categories(id)
+
+Como corrigir (recomendado)
+- Garantir integridade com FK composta:
+  - criar unique (id, user_id) em categories
+  - criar FK (transactions.category_id, transactions.user_id) -> (categories.id, categories.user_id)
+Alternativa: trigger/constraint que valida categories.user_id = transactions.user_id.
+
+Prioridade: Alto
+Arquivos prováveis envolvidos: supabase/schema.sql (ou migração equivalente)
+
+
+4) schema.sql pode falhar ao tentar CREATE POLICY em VIEW
+Por que importa
+- O README orienta rodar supabase/schema.sql; falha no meio pode deixar RLS/policies incompletas.
+
+Evidência
+- supabase/schema.sql tenta:
+  drop policy/create policy on public.monthly_cashflow (view)
+
+Como corrigir
+- Confirmar se o ambiente aceita policies em views.
+  Se não aceitar, remover essa parte e manter security_invoker + filtro where user_id = auth.uid() já presente na view.
+
+Prioridade: Moderado
+Arquivos prováveis envolvidos: supabase/schema.sql, README.md
+
+
+5) CI não roda lint e não há testes automatizados
+Por que importa
+- Regressões em validação, filtros e cálculos são comuns em apps client-heavy.
+- Sem lint/test no CI, problemas chegam mais fácil à produção.
+
+Como corrigir
+- Adicionar npm run lint no workflow.
+- Criar testes unitários para helpers críticos (totais/saldo, datas, formatadores).
+
+Prioridade: Moderado
+Arquivos prováveis envolvidos: .github/workflows/ci.yml e libs em src/lib/**
+
+
+6) Acessibilidade: inputs não sinalizam estado inválido/descrição do erro
+Por que importa
+- Leitores de tela se beneficiam de aria-invalid e aria-describedby apontando para o erro.
+
+Como corrigir
+- Propagar aria-invalid/aria-describedby nos inputs/selects e conectar ao FieldError com IDs.
+
+Prioridade: Baixo
+Arquivos prováveis envolvidos: src/components/ui/Input.tsx, src/components/ui/Select.tsx, src/components/ui/FieldError.tsx, formulários em src/app/**
+
+
+Ordem sugerida de execução
+1) Crítico: unificar/ajustar middleware e tornar proteção de rotas segura por padrão (incluindo /extrato e /resumo).
+2) Alto: endurecer CSP em produção (remover unsafe-eval e reduzir unsafe-inline).
+3) Alto: corrigir integridade multi-tenant no schema (FK composta categoria↔usuário).
+4) Moderado: garantir que supabase/schema.sql roda do começo ao fim sem erro (especialmente na view).
+5) Moderado: reforçar CI com lint e iniciar testes dos helpers.
+6) Baixo: melhorias finas de acessibilidade (aria-invalid/aria-describedby).
+

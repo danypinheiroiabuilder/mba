@@ -1,0 +1,60 @@
+00:26:57.533 Running build in Washington, D.C., USA (East) – iad1
+00:26:57.534 Build machine configuration: 2 cores, 8 GB
+00:26:57.551 Cloning github.com/danypinheiroiabuilder/mba (Branch: main, Commit: 9058527)
+00:26:57.552 Skipping build cache, deployment was triggered without cache.
+00:26:57.794 Cloning completed: 243.000ms
+00:26:58.257 Running "vercel build"
+00:26:58.300 Vercel CLI 56.2.0
+00:26:58.768 Warning: Detected "engines": { "node": ">=20.9.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+00:26:58.787 Installing dependencies...
+00:27:17.250 
+00:27:17.251 added 426 packages in 18s
+00:27:17.252 
+00:27:17.252 153 packages are looking for funding
+00:27:17.252   run `npm fund` for details
+00:27:17.326 Detected Next.js version: 16.2.7
+00:27:17.335 Running "npm run build"
+00:27:17.692 
+00:27:17.692 > dashboard-de-fluxo@0.1.0 build
+00:27:17.692 > next build
+00:27:17.692 
+00:27:18.489   Applying modifyConfig from Vercel
+00:27:18.495 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+00:27:18.496 This information is used to shape Next.js' roadmap and prioritize features.
+00:27:18.496 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+00:27:18.497 https://nextjs.org/telemetry
+00:27:18.497 
+00:27:18.521 ▲ Next.js 16.2.7 (Turbopack)
+00:27:18.522 
+00:27:18.525 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+00:27:18.566   Creating an optimized production build ...
+00:27:37.774 ✓ Compiled successfully in 18.8s
+00:27:37.782   Running TypeScript ...
+00:27:45.779   Finished TypeScript in 8.0s ...
+00:27:45.784   Collecting page data using 1 worker ...
+00:27:46.335   Generating static pages using 1 worker (0/10) ...
+00:27:46.693   Generating static pages using 1 worker (2/10) 
+00:27:46.694   Generating static pages using 1 worker (4/10) 
+00:27:46.695   Generating static pages using 1 worker (7/10) 
+00:27:46.749 ✓ Generating static pages using 1 worker (10/10) in 414ms
+00:27:46.757   Finalizing page optimization ...
+00:27:46.787   Running onBuildComplete from Vercel
+00:27:46.875 Warning: Detected "engines": { "node": ">=20.9.0" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+00:27:46.951 
+00:27:46.954 Route (app)
+00:27:46.955 ┌ ○ /
+00:27:46.955 ├ ○ /_not-found
+00:27:46.956 ├ ○ /categorias
+00:27:46.956 ├ ○ /extrato
+00:27:46.956 ├ ○ /login
+00:27:46.957 ├ ○ /reset
+00:27:46.957 ├ ○ /resumo
+00:27:46.957 └ ○ /transacoes
+00:27:46.957 
+00:27:46.958 
+00:27:46.958 ƒ Proxy (Middleware)
+00:27:46.958 
+00:27:46.959 ○  (Static)  prerendered as static content
+00:27:46.959 
+00:27:47.505 Build Completed in /vercel/output [49s]
+00:27:47.888 Deploying outputs...
