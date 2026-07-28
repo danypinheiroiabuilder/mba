@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 
 import { getSupabase } from "@/services/supabase/client";
 import { useAuthStore } from "@/stores/auth";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
+  console.log("LoginPage rendering");
   const router = useRouter();
   const { ready, user, configOk, init } = useAuthStore();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
@@ -122,12 +122,7 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 items-center justify-center px-4 py-10 sm:px-0 sm:py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
-        className="w-full"
-      >
+      <div className="w-full">
         <Card className="p-6">
           <div>
             <div className="text-sm font-medium text-muted">Fluxo de Caixa</div>
@@ -276,7 +271,7 @@ export default function LoginPage() {
             )}
           </form>
         </Card>
-      </motion.div>
+      </div>
     </div>
   );
 }
