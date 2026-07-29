@@ -62,9 +62,24 @@ export async function updateCategory(id: string, input: CategoryInput): Promise<
   return mapCategory(data as CategoryRow);
 }
 
+// Postgres: foreign_key_violation. Ocorre ao excluir categoria que ainda tem
+// lançamentos, já que a FK é ON DELETE RESTRICT.
+const FOREIGN_KEY_VIOLATION = "23503";
+
+export const CATEGORY_IN_USE_MESSAGE =
+  "Esta categoria possui lançamentos vinculados e não pode ser excluída. Reclassifique os lançamentos antes de tentar novamente.";
+
 export async function deleteCategory(id: string): Promise<void> {
   const supabase = requireSupabase();
   const { error } = await supabase.from("categories").delete().eq("id", id);
-  if (error) throw error;
+  if (!error) return;
+
+  // PostgrestError é um objeto simples, não uma instância de Error — a UI
+  // depende de `instanceof Error` para exibir a mensagem, então convertemos.
+  if (error.code === FOREIGN_KEY_VIOLATION) {
+    throw new Error(CATEGORY_IN_USE_MESSAGE);
+  }
+
+  throw new Error(error.message);
 }
 
