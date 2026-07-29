@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
-  console.log("LoginPage rendering");
   const router = useRouter();
   const { ready, user, configOk, init } = useAuthStore();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
