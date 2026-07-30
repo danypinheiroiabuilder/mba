@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
-:root {
-  /* Design system inspirado no Moneed (Dribbble) */
+/* Tema escuro (padrão). Design system inspirado no Moneed (Dribbble).
+   O tema claro sobrescreve estes mesmos tokens em [data-theme="light"], então
+   componentes nunca devem usar cor fixa — sempre var(--token) ou a classe
+   Tailwind equivalente (bg-card, text-muted, ...). */
+:root,
+:root[data-theme="dark"] {
   --bg: #070a12;
   --surface: #0b1224;
   --card: #0f1933;
@@ -13,9 +17,64 @@
   --primary-2: #3de0c2;
   --income: #2ee59d;
   --expense: #ff5b8a;
+  --warn: #f4a261;
 
   --ring: rgba(110, 123, 255, 0.45);
   --shadow: rgba(0, 0, 0, 0.45);
+
+  /* Fundo da página: dois brilhos coloridos sobre a cor base */
+  --glow-1: rgba(110, 123, 255, 0.18);
+  --glow-2: rgba(61, 224, 194, 0.14);
+
+  /* Gráficos (Recharts recebe estes valores como atributo SVG) */
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-tick: rgba(233, 238, 255, 0.62);
+  --chart-tooltip-bg: rgba(11, 18, 36, 0.92);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.1);
+  --chart-tooltip-text: rgba(233, 238, 255, 0.92);
+  --chart-cursor: rgba(255, 255, 255, 0.05);
+  --chart-income: rgba(46, 229, 157, 0.85);
+  --chart-expense: rgba(255, 91, 138, 0.85);
+  --chart-balance: #6e7bff;
+  --swatch-empty: rgba(255, 255, 255, 0.25);
+}
+
+/* Tema claro. Mantém a mesma família de cores de marca (primary, income,
+   expense) e troca apenas as superfícies e o texto, para o app continuar
+   reconhecível nos dois modos. Contrastes de texto conferidos em AA. */
+:root[data-theme="light"] {
+  --bg: #f5f7fc;
+  --surface: #ffffff;
+  --card: #eef1fa;
+  --border: rgba(16, 24, 51, 0.12);
+  --text: #101833;
+  --muted: rgba(16, 24, 51, 0.62);
+
+  --primary: #4d5bef;
+  --primary-2: #10b39a;
+  /* Verde escurecido de propósito: `text-income` também rotula texto pequeno
+     ("✓ Saudável"), e o tom mais vivo ficava em 3.49:1 sobre branco — abaixo
+     do mínimo de 4.5:1 para texto normal. */
+  --income: #0a7d4e;
+  --expense: #cf2454;
+  --warn: #a94d08;
+
+  --ring: rgba(77, 91, 239, 0.4);
+  --shadow: rgba(16, 24, 51, 0.16);
+
+  --glow-1: rgba(77, 91, 239, 0.12);
+  --glow-2: rgba(16, 179, 154, 0.1);
+
+  --chart-grid: rgba(16, 24, 51, 0.08);
+  --chart-tick: rgba(16, 24, 51, 0.6);
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.96);
+  --chart-tooltip-border: rgba(16, 24, 51, 0.12);
+  --chart-tooltip-text: rgba(16, 24, 51, 0.92);
+  --chart-cursor: rgba(16, 24, 51, 0.05);
+  --chart-income: rgba(10, 125, 78, 0.85);
+  --chart-expense: rgba(207, 36, 84, 0.85);
+  --chart-balance: #4d5bef;
+  --swatch-empty: rgba(16, 24, 51, 0.2);
 }
 
 @theme inline {
@@ -30,6 +89,7 @@
   --color-primary-2: var(--primary-2);
   --color-income: var(--income);
   --color-expense: var(--expense);
+  --color-warn: var(--warn);
   --color-ring: var(--ring);
 
   --font-sans: var(--font-geist-sans);
@@ -37,24 +97,26 @@
 }
 
 body {
-  background: radial-gradient(
-      1200px 900px at 18% 12%,
-      rgba(110, 123, 255, 0.18),
-      transparent 55%
-    ),
-    radial-gradient(
-      1100px 800px at 82% 18%,
-      rgba(61, 224, 194, 0.14),
-      transparent 52%
-    ),
-    linear-gradient(180deg, rgba(7, 10, 18, 1), rgba(7, 10, 18, 1));
+  background: radial-gradient(1200px 900px at 18% 12%, var(--glow-1), transparent 55%),
+    radial-gradient(1100px 800px at 82% 18%, var(--glow-2), transparent 52%),
+    var(--bg);
   color: var(--text);
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 ::selection {
-  background: rgba(110, 123, 255, 0.28);
+  background: var(--ring);
+}
+
+/* Deixa os controles nativos (scrollbar, date picker, autofill) coerentes com
+   o tema ativo. Sem isto o tema claro herda widgets escuros do navegador. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 * {

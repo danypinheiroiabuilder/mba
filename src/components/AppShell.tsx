@@ -14,6 +14,7 @@ import {
 
 import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 function LoadingSkeleton() {
   return (
@@ -56,9 +57,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!ready) return <LoadingSkeleton />;
     // Se usuário logado tenta acessar login, redireciona
     if (user && isLogin) return <LoadingSkeleton />;
-    // Mostra página de auth (login/reset)
+    // Mostra página de auth (login/reset). O seletor de tema fica disponível
+    // aqui também, senão só daria para trocar depois de entrar.
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <div className="mb-4 flex justify-end">
+          <ThemeToggle />
+        </div>
         {children}
       </div>
     );
@@ -79,7 +84,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium text-muted">Fluxo</div>
                     <div
-                      className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(110,123,255,0.12)]"
+                      className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_var(--ring)]"
                       role="status"
                       aria-label="Sessão conectada"
                       title="Sessão conectada"
@@ -110,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         {active && (
                           <motion.div
                             layoutId="nav-pill"
-                            className="absolute inset-0 rounded-2xl bg-card shadow-[0_10px_30px_-18px_rgba(0,0,0,0.65)]"
+                            className="absolute inset-0 rounded-2xl bg-card shadow-[0_10px_30px_-18px_var(--shadow)]"
                             transition={{
                               type: "spring",
                               stiffness: 420,
@@ -125,7 +130,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   })}
                 </nav>
 
-                <div className="rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                <div className="space-y-2 rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                  <div className="flex items-center justify-between gap-2 px-1">
+                    <span className="text-xs text-muted">Tema</span>
+                    <ThemeToggle />
+                  </div>
                   <Button
                     variant="ghost"
                     className="w-full justify-center"
@@ -138,10 +147,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </aside>
 
             <div className="min-w-0 flex-1">
-              <header className="mb-4 flex items-center justify-between sm:hidden">
-                <div className="text-base font-semibold tracking-tight text-text">
+              <header className="mb-4 flex items-center justify-between gap-2 sm:hidden">
+                <div className="min-w-0 truncate text-base font-semibold tracking-tight text-text">
                   {nav.find((item) => isActive(pathname, item.href))?.label ?? "Fluxo de Caixa"}
                 </div>
+                <ThemeToggle className="shrink-0" />
               </header>
 
               <AnimatePresence mode="wait">
