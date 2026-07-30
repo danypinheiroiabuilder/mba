@@ -94,7 +94,11 @@ from public.transactions
 where user_id = auth.uid()
 group by 1, 2;
 
--- FK composta: garante que category_id pertence ao mesmo usuário da transação
+-- FK composta: garante que category_id pertence ao mesmo usuário da transação.
+-- Como categories.user_id e transactions.user_id são NOT NULL, o MATCH SIMPLE
+-- padrão é sempre aplicado. Consequência registrada na issue #9: uma categoria
+-- sem dono nunca casaria com esta FK, ou seja, seria inutilizável para novos
+-- lançamentos — por isso categories.user_id é NOT NULL, e não apenas indexado.
 alter table public.categories add constraint categories_id_user_unique unique (id, user_id);
 alter table public.transactions
   add constraint transactions_category_user_fk
