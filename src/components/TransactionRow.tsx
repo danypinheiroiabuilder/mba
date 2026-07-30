@@ -43,7 +43,7 @@ export const TransactionRow = memo(function TransactionRow({
         <div className="flex items-center gap-2">
           <span
             className="h-2.5 w-2.5 rounded-full"
-            style={{ background: c?.color ?? "rgba(255,255,255,0.25)" }}
+            style={{ background: c?.color ?? "var(--swatch-empty)" }}
           />
           <div className="truncate text-sm font-medium text-text">
             {t.description}

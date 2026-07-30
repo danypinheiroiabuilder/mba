@@ -90,7 +90,7 @@ export function Dialog({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative w-full max-w-lg rounded-3xl border border-border bg-surface p-4 shadow-[0_40px_90px_-60px_rgba(0,0,0,0.9)] sm:p-6"
+            className="relative w-full max-w-lg rounded-3xl border border-border bg-surface p-4 shadow-[0_40px_90px_-60px_var(--shadow)] sm:p-6"
             initial={{ y: 16, scale: 0.98, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 8, scale: 0.98, opacity: 0 }}

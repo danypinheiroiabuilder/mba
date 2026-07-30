@@ -20,7 +20,7 @@ type CommitmentLevel = { label: string; color: string };
 
 function classifyCommitment(ratio: number): CommitmentLevel {
   if (ratio < 0.7) return { label: "✓ Saudável", color: "text-income" };
-  if (ratio < 0.9) return { label: "⚠ Atenção", color: "text-[#f4a261]" };
+  if (ratio < 0.9) return { label: "⚠ Atenção", color: "text-warn" };
   return { label: "✕ Alto", color: "text-expense" };
 }
 

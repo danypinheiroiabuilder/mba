@@ -14,11 +14,12 @@ import {
 
 import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 function LoadingSkeleton() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
+      <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-panel" />
     </div>
   );
 }
@@ -56,9 +57,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!ready) return <LoadingSkeleton />;
     // Se usuário logado tenta acessar login, redireciona
     if (user && isLogin) return <LoadingSkeleton />;
-    // Mostra página de auth (login/reset)
+    // Mostra página de auth (login/reset). O seletor de tema fica disponível
+    // aqui também, senão só daria para trocar depois de entrar.
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <div className="mb-4 flex justify-end">
+          <ThemeToggle />
+        </div>
         {children}
       </div>
     );
@@ -75,11 +80,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex w-full max-w-6xl gap-4 px-4 pt-6 pb-24 sm:px-6 sm:py-6">
             <aside className="hidden w-64 shrink-0 sm:block">
               <div className="sticky top-6 space-y-4">
-                <div className="rounded-3xl border border-border bg-surface/70 p-4 backdrop-blur">
+                <div className="rounded-3xl border border-border bg-panel-raised p-4 backdrop-blur">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium text-muted">Fluxo</div>
                     <div
-                      className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(110,123,255,0.12)]"
+                      className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_var(--ring)]"
                       role="status"
                       aria-label="Sessão conectada"
                       title="Sessão conectada"
@@ -93,7 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
 
-                <nav aria-label="Navegação principal" className="rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                <nav aria-label="Navegação principal" className="rounded-3xl border border-border bg-panel-quiet p-2 backdrop-blur">
                   {nav.map((item) => {
                     const active = isActive(pathname, item.href);
                     const Icon = item.icon;
@@ -110,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         {active && (
                           <motion.div
                             layoutId="nav-pill"
-                            className="absolute inset-0 rounded-2xl bg-card shadow-[0_10px_30px_-18px_rgba(0,0,0,0.65)]"
+                            className="absolute inset-0 rounded-2xl bg-card shadow-[0_10px_30px_-18px_var(--shadow)]"
                             transition={{
                               type: "spring",
                               stiffness: 420,
@@ -125,7 +130,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   })}
                 </nav>
 
-                <div className="rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                <div className="space-y-2 rounded-3xl border border-border bg-panel-quiet p-2 backdrop-blur">
+                  <div className="flex items-center justify-between gap-2 px-1">
+                    <span className="text-xs text-muted">Tema</span>
+                    <ThemeToggle />
+                  </div>
                   <Button
                     variant="ghost"
                     className="w-full justify-center"
@@ -138,10 +147,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </aside>
 
             <div className="min-w-0 flex-1">
-              <header className="mb-4 flex items-center justify-between sm:hidden">
-                <div className="text-base font-semibold tracking-tight text-text">
+              <header className="mb-4 flex items-center justify-between gap-2 sm:hidden">
+                <div className="min-w-0 truncate text-base font-semibold tracking-tight text-text">
                   {nav.find((item) => isActive(pathname, item.href))?.label ?? "Fluxo de Caixa"}
                 </div>
+                <ThemeToggle className="shrink-0" />
               </header>
 
               <AnimatePresence mode="wait">
@@ -151,7 +161,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
                   transition={{ duration: 0.22, ease: "easeOut" }}
-                  className="rounded-3xl border border-border bg-surface/55 p-4 backdrop-blur sm:p-6"
+                  className="rounded-3xl border border-border bg-panel p-4 backdrop-blur sm:p-6"
                 >
                   <main role="main">
                     {children}
@@ -162,7 +172,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="fixed bottom-4 left-0 right-0 z-40 sm:hidden">
-            <nav aria-label="Navegação mobile" className="mx-auto flex w-[min(100%,calc(100%-32px))] items-center justify-between gap-1 rounded-3xl border border-border bg-surface/70 p-1 backdrop-blur">
+            <nav aria-label="Navegação mobile" className="mx-auto flex w-[min(100%,calc(100%-32px))] items-center justify-between gap-1 rounded-3xl border border-border bg-panel-raised p-1 backdrop-blur">
               {nav.map((item) => {
                 const active = isActive(pathname, item.href);
                 const Icon = item.icon;

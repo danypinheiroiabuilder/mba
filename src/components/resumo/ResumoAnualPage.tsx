@@ -27,7 +27,7 @@ type CommitmentLevel = { label: string; color: string };
 
 function classifyCommitment(ratio: number): CommitmentLevel {
   if (ratio < 0.7) return { label: "✓ Saudável", color: "text-income" };
-  if (ratio < 0.9) return { label: "⚠ Atenção", color: "text-[#f4a261]" };
+  if (ratio < 0.9) return { label: "⚠ Atenção", color: "text-warn" };
   return { label: "✕ Alto", color: "text-expense" };
 }
 
@@ -90,13 +90,13 @@ export function ResumoAnualPage() {
           {mounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData} margin={{ left: 8, right: 8, top: 20, bottom: 0 }}>
-                <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+                <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
                   axisLine={false}
                   height={48}
-                  tick={{ fill: "rgba(233,238,255,0.62)", fontSize: 11 }}
+                  tick={{ fill: "var(--chart-tick)", fontSize: 11 }}
                   angle={-35}
                   textAnchor="end"
                   dy={4}
@@ -105,7 +105,7 @@ export function ResumoAnualPage() {
                   tickLine={false}
                   axisLine={false}
                   width={64}
-                  tick={{ fill: "rgba(233,238,255,0.62)", fontSize: 12 }}
+                  tick={{ fill: "var(--chart-tick)", fontSize: 12 }}
                   tickFormatter={(v) =>
                     new Intl.NumberFormat("pt-BR", {
                       notation: "compact",
@@ -115,10 +115,10 @@ export function ResumoAnualPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    background: "rgba(11,18,36,0.92)",
-                    border: "1px solid rgba(255,255,255,0.10)",
+                    background: "var(--chart-tooltip-bg)",
+                    border: "1px solid var(--chart-tooltip-border)",
                     borderRadius: 16,
-                    color: "rgba(233,238,255,0.92)",
+                    color: "var(--chart-tooltip-text)",
                     padding: "8px 12px",
                   }}
                   formatter={(value: unknown, name: unknown) => {
@@ -140,14 +140,14 @@ export function ResumoAnualPage() {
                     const key = payload?.[0]?.payload?.monthKey;
                     return key ? monthLabelFromKey(key) : String(label);
                   }}
-                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  cursor={{ fill: "var(--chart-cursor)" }}
                 />
 
                 <Legend
                   wrapperStyle={{
                     paddingTop: "12px",
                     paddingBottom: "0",
-                    color: "rgba(233,238,255,0.62)",
+                    color: "var(--chart-tick)",
                     fontSize: 12,
                   }}
                   formatter={(value: unknown) => {
@@ -165,14 +165,14 @@ export function ResumoAnualPage() {
                 <Bar
                   dataKey="income"
                   name="income"
-                  fill="rgba(46,229,157,0.85)"
+                  fill="var(--chart-income)"
                   radius={[10, 10, 4, 4]}
                   animationDuration={650}
                 />
                 <Bar
                   dataKey="expense"
                   name="expense"
-                  fill="rgba(255,91,138,0.85)"
+                  fill="var(--chart-expense)"
                   radius={[10, 10, 4, 4]}
                   animationDuration={650}
                 />
@@ -180,9 +180,9 @@ export function ResumoAnualPage() {
                   type="monotone"
                   dataKey="balance"
                   name="balance"
-                  stroke="rgba(110,123,255,1)"
+                  stroke="var(--chart-balance)"
                   strokeWidth={3}
-                  dot={{ fill: "rgba(110,123,255,1)", r: 3 }}
+                  dot={{ fill: "var(--chart-balance)", r: 3 }}
                   activeDot={{ r: 5 }}
                   animationDuration={650}
                   isAnimationActive={true}

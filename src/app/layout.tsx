@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { themeInitScript } from "./theme-script";
 import { AppShell } from "@/components/AppShell";
 
 const geistSans = Geist({
@@ -28,7 +29,13 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // `data-theme` é escrito pelo themeInitScript antes da hidratação, então
+      // o servidor não tem como emitir o mesmo valor.
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>
           <AppShell>{children}</AppShell>
