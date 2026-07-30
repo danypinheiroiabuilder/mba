@@ -19,7 +19,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 function LoadingSkeleton() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-surface/55" />
+      <div className="h-[60vh] w-full animate-pulse rounded-3xl border border-border bg-panel" />
     </div>
   );
 }
@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex w-full max-w-6xl gap-4 px-4 pt-6 pb-24 sm:px-6 sm:py-6">
             <aside className="hidden w-64 shrink-0 sm:block">
               <div className="sticky top-6 space-y-4">
-                <div className="rounded-3xl border border-border bg-surface/70 p-4 backdrop-blur">
+                <div className="rounded-3xl border border-border bg-panel-raised p-4 backdrop-blur">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium text-muted">Fluxo</div>
                     <div
@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
 
-                <nav aria-label="Navegação principal" className="rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                <nav aria-label="Navegação principal" className="rounded-3xl border border-border bg-panel-quiet p-2 backdrop-blur">
                   {nav.map((item) => {
                     const active = isActive(pathname, item.href);
                     const Icon = item.icon;
@@ -130,7 +130,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   })}
                 </nav>
 
-                <div className="space-y-2 rounded-3xl border border-border bg-surface/60 p-2 backdrop-blur">
+                <div className="space-y-2 rounded-3xl border border-border bg-panel-quiet p-2 backdrop-blur">
                   <div className="flex items-center justify-between gap-2 px-1">
                     <span className="text-xs text-muted">Tema</span>
                     <ThemeToggle />
@@ -161,7 +161,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
                   transition={{ duration: 0.22, ease: "easeOut" }}
-                  className="rounded-3xl border border-border bg-surface/55 p-4 backdrop-blur sm:p-6"
+                  className="rounded-3xl border border-border bg-panel p-4 backdrop-blur sm:p-6"
                 >
                   <main role="main">
                     {children}
@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="fixed bottom-4 left-0 right-0 z-40 sm:hidden">
-            <nav aria-label="Navegação mobile" className="mx-auto flex w-[min(100%,calc(100%-32px))] items-center justify-between gap-1 rounded-3xl border border-border bg-surface/70 p-1 backdrop-blur">
+            <nav aria-label="Navegação mobile" className="mx-auto flex w-[min(100%,calc(100%-32px))] items-center justify-between gap-1 rounded-3xl border border-border bg-panel-raised p-1 backdrop-blur">
               {nav.map((item) => {
                 const active = isActive(pathname, item.href);
                 const Icon = item.icon;
