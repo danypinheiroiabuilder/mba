@@ -4,6 +4,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import type { Transaction } from "@/lib/types";
 import { formatBRL } from "@/lib/money";
+import { formatDateBR } from "@/lib/dates";
 import { Button } from "@/components/ui/Button";
 
 const exitAnimation = {
@@ -33,33 +34,47 @@ export const TransactionRow = memo(function TransactionRow({
   return (
     <motion.div
       layout
-      className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/30 px-3 py-2"
+      className="flex flex-col gap-2 rounded-2xl border border-border bg-card/30 px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={exitAnimation}
       transition={{ duration: 0.16, ease: "easeOut" }}
     >
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <span
-            className="h-2.5 w-2.5 rounded-full"
-            style={{ background: c?.color ?? "var(--swatch-empty)" }}
-          />
-          <div className="truncate text-sm font-medium text-text">
-            {t.description}
-          </div>
+      <div className="min-w-0 sm:flex-1">
+        <div className="truncate text-sm font-medium text-text">
+          {t.description}
         </div>
-        <div className="mt-0.5 text-xs text-muted">
-          {c?.name ?? "Sem categoria"} • {t.date}
-          {t.tag ? ` • #${t.tag}` : ""}
-          {runningBalance !== undefined && <> • Saldo: {formatBRL(runningBalance)}</>}
+        {/* Metadados em blocos que não quebram no meio: a data inteira cabe
+            numa linha só, e a bolinha fica colada no nome da categoria para
+            deixar claro que a cor pertence à categoria, não à tag. */}
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span
+              className="h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{ background: c?.color ?? "var(--swatch-empty)" }}
+            />
+            {c?.name ?? "Sem categoria"}
+          </span>
+          <span aria-hidden="true">•</span>
+          <span className="whitespace-nowrap">{formatDateBR(t.date)}</span>
+          {t.tag && (
+            <span className="whitespace-nowrap rounded-full border border-border px-1.5 py-0.5">
+              #{t.tag}
+            </span>
+          )}
+          {runningBalance !== undefined && (
+            <>
+              <span aria-hidden="true">•</span>
+              <span className="whitespace-nowrap">Saldo: {formatBRL(runningBalance)}</span>
+            </>
+          )}
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-wrap items-center justify-end gap-1 sm:gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-1 sm:shrink-0 sm:justify-end sm:gap-2">
         <span
           className={[
-            "text-xs px-2 py-0.5 rounded-full font-medium",
+            "whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium",
             t.type === "income"
               ? "bg-income/10 text-income"
               : "bg-expense/10 text-expense",
@@ -69,7 +84,7 @@ export const TransactionRow = memo(function TransactionRow({
         </span>
         <div
           className={[
-            "text-right text-sm font-semibold",
+            "ml-auto whitespace-nowrap text-right text-sm font-semibold sm:ml-0",
             t.type === "income" ? "text-income" : "text-expense",
           ].join(" ")}
         >
@@ -77,7 +92,9 @@ export const TransactionRow = memo(function TransactionRow({
           {formatBRL(t.amount)}
         </div>
         {showActions && (
-          <>
+          // No celular os botões ganham a própria linha, alinhados à direita,
+          // em vez de disputar espaço com o valor.
+          <div className="flex w-full items-center justify-end gap-2 sm:w-auto sm:gap-2">
             {onEdit && (
               <Button
                 variant="ghost"
@@ -98,7 +115,7 @@ export const TransactionRow = memo(function TransactionRow({
                 Excluir
               </Button>
             )}
-          </>
+          </div>
         )}
       </div>
     </motion.div>
