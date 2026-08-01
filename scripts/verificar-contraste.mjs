@@ -17,7 +17,10 @@
  */
 import { readFileSync } from "node:fs";
 
-const css = readFileSync("src/app/globals.css", "utf8");
+// Normaliza CRLF: no Windows o git reescreve o arquivo com \r\n no checkout, e
+// seletores casados com \n deixariam de ser encontrados — o script passou a
+// falhar sozinho depois de um merge, sem ninguém ter mexido no CSS.
+const css = readFileSync("src/app/globals.css", "utf8").replace(/\r\n/g, "\n");
 
 function bloco(seletor) {
   const i = css.indexOf(seletor);
