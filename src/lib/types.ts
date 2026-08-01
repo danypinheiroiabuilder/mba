@@ -56,8 +56,22 @@ export const transactionSchema = z.object({
     .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a data no formato AAAA-MM-DD"),
   tag: z.string().trim().optional(),
-  paymentMethod: z.enum(["pix", "debito", "credito", "dinheiro", "transferencia", "outro"]).optional(),
+  // O <select> envia "" quando nada é escolhido, e o campo é opcional.
+  // Sem aceitar a string vazia, o enum reprova e bloqueia o salvamento.
+  paymentMethod: z
+    .union(
+      [
+        z.enum(["pix", "debito", "credito", "dinheiro", "transferencia", "outro"]),
+        z.literal(""),
+      ],
+      { message: "Escolha uma forma de pagamento válida" },
+    )
+    .optional()
+    .transform((value) => (value === "" ? undefined : value)),
 });
 
-export type TransactionInput = z.infer<typeof transactionSchema>;
+// O schema normaliza "" para undefined em paymentMethod, então entrada e saída
+// têm tipos diferentes: o formulário trabalha com a entrada, o serviço com a saída.
+export type TransactionFormInput = z.input<typeof transactionSchema>;
+export type TransactionInput = z.output<typeof transactionSchema>;
 
