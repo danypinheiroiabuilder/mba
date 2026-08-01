@@ -8,6 +8,7 @@ import {
   deleteTransaction,
   listMonthlyCashflow,
   listTransactionsByMonth,
+  listTransactionsByRange,
   upsertTransaction,
   type MonthlyCashflowPoint,
 } from "@/services/transactions";
@@ -26,9 +27,17 @@ type DataState = {
   cashflowLoading: boolean;
   cashflowError: string | null;
 
+  // Lançamentos brutos do período analisado no Resumo Anual, para permitir
+  // filtrar por categoria (a view agregada não guarda essa informação).
+  analysisTransactions: Transaction[];
+  analysisRange: { from: string; to: string } | null;
+  analysisLoading: boolean;
+  analysisError: string | null;
+
   refreshCategories: () => Promise<void>;
   refreshTransactions: (monthKey: string) => Promise<void>;
   refreshCashflow12m: () => Promise<void>;
+  refreshAnalysisTransactions: (from: string, to: string) => Promise<void>;
 
   addCategory: (input: Parameters<typeof createCategory>[0], userId: string) => Promise<void>;
   updateCategory: (id: string, input: Parameters<typeof createCategory>[0]) => Promise<void>;
@@ -65,6 +74,11 @@ export const useDataStore = create<DataState>((set, get) => ({
   cashflow12m: [],
   cashflowLoading: false,
   cashflowError: null,
+
+  analysisTransactions: [],
+  analysisRange: null,
+  analysisLoading: false,
+  analysisError: null,
 
   refreshCategories: async () => {
     set({ categoriesLoading: true, categoriesError: null });
@@ -105,6 +119,19 @@ export const useDataStore = create<DataState>((set, get) => ({
     }
   },
 
+  refreshAnalysisTransactions: async (from: string, to: string) => {
+    set({ analysisLoading: true, analysisError: null });
+    try {
+      const analysisTransactions = await listTransactionsByRange(from, to);
+      set({ analysisTransactions, analysisRange: { from, to }, analysisError: null });
+    } catch (error) {
+      const message = extractMessage(error, "Failed to load analysis transactions");
+      set({ analysisError: message });
+    } finally {
+      set({ analysisLoading: false });
+    }
+  },
+
   addCategory: async (input, userId) => {
     await createCategory(input, userId);
     await get().refreshCategories();
@@ -125,6 +152,9 @@ export const useDataStore = create<DataState>((set, get) => ({
     const monthKey = get().monthKey;
     if (monthKey) await get().refreshTransactions(monthKey);
     await get().refreshCashflow12m();
+    // Mantém o Resumo Anual em dia sem forçar quem não abriu a tela a buscar.
+    const range = get().analysisRange;
+    if (range) await get().refreshAnalysisTransactions(range.from, range.to);
   },
 
   removeTransaction: async (id) => {
@@ -132,6 +162,9 @@ export const useDataStore = create<DataState>((set, get) => ({
     const monthKey = get().monthKey;
     if (monthKey) await get().refreshTransactions(monthKey);
     await get().refreshCashflow12m();
+    // Mantém o Resumo Anual em dia sem forçar quem não abriu a tela a buscar.
+    const range = get().analysisRange;
+    if (range) await get().refreshAnalysisTransactions(range.from, range.to);
   },
 
   resetData: () => {
@@ -143,6 +176,9 @@ export const useDataStore = create<DataState>((set, get) => ({
       transactionsError: null,
       cashflow12m: [],
       cashflowError: null,
+      analysisTransactions: [],
+      analysisRange: null,
+      analysisError: null,
     });
   },
 }));
