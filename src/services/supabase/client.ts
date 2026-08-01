@@ -2,8 +2,7 @@ import { createBrowserClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { config } from "@/config/env";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL || config.supabase.url;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || config.supabase.anonKey;
+const { url, anonKey } = config.supabase;
 
 let client: SupabaseClient | null = null;
 
