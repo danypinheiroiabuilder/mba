@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 import {
   LayoutDashboard,
-  BookOpen,
   BarChart2,
   ListPlus,
   Tag,
@@ -26,7 +25,6 @@ function LoadingSkeleton() {
 
 const nav = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/extrato", label: "Extrato", icon: BookOpen },
   { href: "/resumo", label: "Resumo Anual", icon: BarChart2 },
   { href: "/transacoes", label: "Lançamentos", icon: ListPlus },
   { href: "/categorias", label: "Categorias", icon: Tag },
