@@ -24,6 +24,12 @@
 .DS_Store
 *.pem
 
+# prints de teste manual: evidência local, não versionar as imagens.
+# O README de cada pasta é versionado e descreve o que cada print mostra.
+docs/prints/**/*.jpeg
+docs/prints/**/*.jpg
+docs/prints/**/*.png
+
 # debug
 npm-debug.log*
 yarn-debug.log*

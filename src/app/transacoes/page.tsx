@@ -9,8 +9,13 @@ import { AnimatePresence } from "framer-motion";
 import { ArrowUpCircle, ArrowDownCircle, Wallet, ListPlus } from "lucide-react";
 
 import type { Transaction } from "@/lib/types";
-import { transactionSchema, type TransactionInput, PAYMENT_METHODS } from "@/lib/types";
-import { clampMonthKey, monthLabelFromKey, shiftMonthKey } from "@/lib/dates";
+import {
+  transactionSchema,
+  type TransactionFormInput,
+  type TransactionInput,
+  PAYMENT_METHODS,
+} from "@/lib/types";
+import { clampMonthKey, monthLabelFromKey } from "@/lib/dates";
 import { formatBRL } from "@/lib/money";
 import { calculateTotals } from "@/lib/helpers";
 import { Card } from "@/components/ui/Card";
@@ -71,7 +76,7 @@ export default function TransacoesPage() {
     return mapWithType;
   }, [allCategories]);
 
-  const form = useForm<TransactionInput>({
+  const form = useForm<TransactionFormInput, unknown, TransactionInput>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       description: "",

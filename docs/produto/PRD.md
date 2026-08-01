@@ -12,6 +12,12 @@ O **Dashboard de Fluxo de Caixa** é um aplicativo web para você controlar seu 
 
 O app já está funcionando na internet e sendo usado. Foi desenvolvido como projeto de conclusão de MBA.
 
+### Origem
+
+O app é a evolução de um controle financeiro que já existia em planilha, preservado neste repositório em [`docs/produto/Controle Financeiro Youtube.xlsx`](Controle%20Financeiro%20Youtube.xlsx). A planilha foi o **projeto inicial da pós-graduação**; este aplicativo é a versão que a substitui, mantendo a mesma lógica de receitas, despesas, categorias e fluxo mensal, agora multiusuário, acessível pelo celular e com os dados protegidos por conta.
+
+Ela permanece versionada como **referência**, não como dependência: nada no código a lê. Serve para comparar comportamento e conferir se alguma regra do controle original ficou de fora.
+
 ---
 
 ## 2. Problema que o Produto Resolve
@@ -70,13 +76,11 @@ Este app responde essas perguntas de forma rápida e visual, tudo em um só luga
 
 ---
 
-### 4.3 Extrato (Histórico do Mês)
+### 4.3 Extrato (removido em 2026-07-31)
 
-**O que você vê**: Uma lista de **todos** os lançamentos que você criou naquele mês, em ordem (receitas e despesas juntas).
+A tela de Extrato existiu até 2026-07-31 e foi **removida**: ela mostrava exatamente a mesma lista da tela de Lançamentos, só que sem editar, sem filtros, sem totais e sem o saldo acumulado. Era um subconjunto estrito de "Lançamentos", e o nome parecido com "Lançamentos do mês" confundia mais do que ajudava.
 
-**O que você pode fazer**: só olhar. Não dá para editar ou excluir por aqui — se precisar mudar algo, vai na tela de "Lançamentos" (ver seção 4.5).
-
-**Serve para**: auditar rapidinho o mês, conferir se ficou algo faltando.
+Quem quiser só conferir o mês usa a tela de **Lançamentos** (seção 4.5), que mostra a mesma lista com saldo acumulado linha a linha, filtros por categoria e tag, e os totais no topo.
 
 ---
 

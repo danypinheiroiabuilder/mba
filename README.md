@@ -8,6 +8,16 @@ Sistema web moderno de controle financeiro pessoal com:
 - **Supabase Auth + RLS** (dados por usuário)
 - Deploy na **Vercel**
 
+O app é a evolução de um controle financeiro em planilha, mantido como referência em [`docs/produto/`](docs/produto/). Nada no código a lê — ver [PRD, seção 1](docs/produto/PRD.md#origem).
+
+## Documentação
+
+- [`docs/produto/`](docs/produto/) — PRD e a planilha que originou o projeto
+- [`docs/auditorias/`](docs/auditorias/) — auditorias técnicas e registros de erro
+- [`docs/historico/`](docs/historico/) — o que já foi realizado
+- [`docs/prints/`](docs/prints/) — evidências de teste manual (imagens ficam locais)
+- [`docs/AGENTS.md`](docs/AGENTS.md) — regras para assistentes de IA neste repositório
+
 ## Getting Started
 
 First, run the development server:

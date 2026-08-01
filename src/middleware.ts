@@ -11,7 +11,7 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || appConfig.supabase.anonKey;
 
-const PRIVATE_ROUTES = ["/", "/transacoes", "/categorias", "/extrato", "/resumo"];
+const PRIVATE_ROUTES = ["/", "/transacoes", "/categorias", "/resumo"];
 const PUBLIC_ONLY_ROUTES = ["/login", "/reset"];
 
 export async function middleware(request: NextRequest) {

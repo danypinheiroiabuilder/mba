@@ -46,6 +46,26 @@ export async function listTransactionsByMonth(monthKey: string): Promise<Transac
   return (data ?? []).map(mapTransaction);
 }
 
+/**
+ * Lançamentos brutos de um intervalo, para análises que precisam quebrar por
+ * categoria — a view `monthly_cashflow` já vem agregada por mês e não serve.
+ */
+export async function listTransactionsByRange(
+  fromDate: string,
+  toDate: string,
+): Promise<Transaction[]> {
+  const supabase = requireSupabase();
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("id,user_id,description,type,category_id,amount,date,tag,payment_method,created_at")
+    .gte("date", fromDate)
+    .lte("date", toDate)
+    .order("date", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map(mapTransaction);
+}
+
 export async function upsertTransaction(
   input: TransactionInput,
   userId: string,
