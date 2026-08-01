@@ -152,13 +152,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <ThemeToggle className="shrink-0" />
               </header>
 
-              <AnimatePresence mode="wait">
+              {/* "popLayout" no lugar de "wait": a página nova entra junto com
+                  a saída da antiga (que sai do fluxo, sem empurrar o layout),
+                  em vez de esperar a saída terminar. E sem animar `filter:
+                  blur`, que força repintura da tela inteira e pesa no celular. */}
+              <AnimatePresence mode="popLayout" initial={false}>
                 <motion.div
                   key={pathname}
-                  initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
-                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
                   className="rounded-3xl border border-border bg-panel p-4 backdrop-blur sm:p-6"
                 >
                   <main role="main">
