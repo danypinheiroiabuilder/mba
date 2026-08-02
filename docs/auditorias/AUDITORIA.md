@@ -223,4 +223,4 @@ alter table public.transactions
 - Bug de estado desatualizado ao trocar de conta (dados da sessão anterior continuavam na tela) — corrigido com reset de store + effects dependentes de `user`.
 - 6 registros órfãos (`user_id = NULL`) removidos do banco.
 - `engines.node` e `turbopack.root` configurados para build mais previsível na Vercel.
-- Ajustes de UX/consistência visual: direção da seta de tendência, ícones nos cards (padronizados em Dashboard, Resumo, Extrato, Categorias, Lançamentos), estado vazio do "Comprometimento", tooltip da bolinha de status na sidebar.
+- Ajustes de UX/consistência visual: direção da seta de tendência, ícones nos cards (padronizados em Dashboard, Resumo, Categorias, Lançamentos — Extrato removido em 2026-07-31), estado vazio do "Comprometimento", tooltip da bolinha de status na sidebar.

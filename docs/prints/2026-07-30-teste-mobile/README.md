@@ -29,9 +29,12 @@ tela passou a ser usada de verdade.
 
 ## Também em aberto
 
-- Demora percebida ao trocar de página, mais forte em Extrato e Dashboard.
-- Dúvida de nomenclatura: "Lançamentos do mês" × "Extrato" — se a diferença não
-  está óbvia para quem construiu o app, a interface não está comunicando.
+- Demora percebida ao trocar de página, mais forte no Dashboard. (O caso do
+  Extrato deixou de existir: rota removida em 2026-07-31.)
+- ~~Dúvida de nomenclatura: "Lançamentos do mês" × "Extrato" — se a diferença não
+  está óbvia para quem construiu o app, a interface não está comunicando.~~
+  Resolvido em 2026-07-31 pela remoção da tela de Extrato, que duplicava
+  "Receitas e Despesas".
 - Sistema de cores das Tags não compreendido. Hipótese: cor é atributo de
   **categoria**, e `tag` é texto livre sem cor — o marcador colorido ao lado do
   lançamento parece pertencer à tag quando é da categoria.
