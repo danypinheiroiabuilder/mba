@@ -2,19 +2,22 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // alias: este módulo já exporta `config` (matcher do middleware)
-import { config as appConfig } from "@/config/env";
+import { config as appConfig, isSupabaseConfigured } from "@/config/env";
 
 export const runtime = "nodejs";
 
-const SUPABASE_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || appConfig.supabase.url;
-const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || appConfig.supabase.anonKey;
+const SUPABASE_URL = appConfig.supabase.url;
+const SUPABASE_ANON_KEY = appConfig.supabase.anonKey;
 
 const PRIVATE_ROUTES = ["/", "/transacoes", "/categorias", "/resumo"];
 const PUBLIC_ONLY_ROUTES = ["/login", "/reset"];
 
 export async function middleware(request: NextRequest) {
+  // Sem as variáveis do Supabase não há como validar sessão aqui. Deixa passar
+  // para a tela de login, que mostra as instruções de configuração, em vez de
+  // derrubar toda requisição do site.
+  if (!isSupabaseConfigured) return NextResponse.next({ request });
+
   const isRsc = request.headers.get("rsc") === "1";
   if (isRsc) return NextResponse.next({ request });
 
