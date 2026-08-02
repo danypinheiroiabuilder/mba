@@ -1,3 +1,9 @@
+# Regras do projeto (Cursor + assistentes)
+
+Fonte das regras **locais** deste app. No Cursor, este arquivo na **raiz** é lido automaticamente. O detalhe versionado também vive em [`docs/AGENTS.md`](docs/AGENTS.md) (usado via `CLAUDE.md` no Claude Code).
+
+Manter os dois alinhados quando mudar regras locais. Metodologia pessoal da Dany no Cursor: cole [`docs/cursor/USER_RULES.md`](docs/cursor/USER_RULES.md) em **Customize → Rules** (não usar `~/.claude/CLAUDE.md` no Cursor).
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
@@ -6,15 +12,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Prova reproduzível
 
-A regra geral de prova (alegação sem evidência = hipótese; busca truncada; 2ª verificação em achados críticos) está no playbook pessoal: Claude Code → `~/.claude/CLAUDE.md`; Cursor → User Rules (`docs/cursor/USER_RULES.md`). Aqui só o local: use `scripts/verificar-contraste.mjs` quando for contraste deste app; rode comando real neste repo antes de declarar correção.
-
-# Cursor
-
-Regras deste repo para o Cursor também estão em `AGENTS.md` na raiz (o Cursor lê a raiz). Pacote e instalação: `docs/cursor/README.md`.
+A regra geral de prova está nas **User Rules** do Cursor (e no Claude global, fora deste repo). Aqui só o local: use `scripts/verificar-contraste.mjs` para contraste deste app; rode comando real neste repo antes de declarar correção.
 
 # Banco: o que é específico deste projeto
 
-As regras gerais de banco, migração e deploy valem para qualquer projeto e não são repetidas aqui. Abaixo, apenas o que é particular deste repositório — e o que já causou incidente.
+As regras gerais de banco, migração e deploy não são repetidas aqui. Abaixo, apenas o particular deste repositório — e o que já causou incidente.
 
 **Preview e Produção usam o MESMO banco.** As variáveis `NEXT_PUBLIC_SUPABASE_*` dos dois ambientes apontam para o mesmo projeto Supabase (`ozfqpfuvufiqtewducxx`). Não existe banco de teste. Portanto:
 

@@ -16,7 +16,9 @@ O app é a evolução de um controle financeiro em planilha, mantido como refer�
 - [`docs/auditorias/`](docs/auditorias/) — auditorias técnicas e registros de erro
 - [`docs/historico/`](docs/historico/) — o que já foi realizado
 - [`docs/prints/`](docs/prints/) — evidências de teste manual (imagens ficam locais)
-- [`docs/AGENTS.md`](docs/AGENTS.md) — regras para assistentes de IA neste repositório
+- [`docs/AGENTS.md`](docs/AGENTS.md) — regras locais para assistentes de IA (Claude Code via `CLAUDE.md`)
+- [`AGENTS.md`](AGENTS.md) — mesmas regras locais na raiz (Cursor lê automaticamente)
+- [`docs/cursor/`](docs/cursor/) — playbook adaptado ao Cursor (User Rules)
 
 ## Getting Started
 
