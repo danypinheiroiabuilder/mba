@@ -79,6 +79,12 @@ for (const [tema, P] of Object.entries(temas)) {
   // Campos e caixas informativas: bg-card/40 e bg-card/30 sobre o cartão.
   const campo = over({ ...parse(P.card), a: 0.4 }, cartao);
   const caixaInfo = over({ ...parse(P.card), a: 0.3 }, cartaoNoLogin);
+  // Barra inferior do celular (bg-panel-raised sobre o fundo da página) e a
+  // pílula da aba ativa (bg-card por cima da barra). O rótulo tem 11px, então
+  // conta como texto normal e vale o mesmo mínimo de 4.5:1 — não é texto
+  // grande. Mesma superfície do cartão de sessão na sidebar do desktop.
+  const barraMobile = over(parse(P["panel-raised"]), bg);
+  const abaAtiva = over(parse(P.card), barraMobile);
 
   const todas = ["text", "muted", "primary", "income", "expense", "warn"];
 
@@ -90,6 +96,9 @@ for (const [tema, P] of Object.entries(temas)) {
     "cartao no login": { rgb: cartaoNoLogin, cores: todas },
     "campo de form": { rgb: campo, cores: ["text", "muted"] },
     "caixa informativa": { rgb: caixaInfo, cores: ["muted"] },
+    // Aba inativa usa `muted`; `text` é o estado de hover/foco.
+    "barra mobile": { rgb: barraMobile, cores: ["text", "muted"] },
+    "aba ativa": { rgb: abaAtiva, cores: ["text"] },
   };
 
   for (const [nome, { rgb, cores }] of Object.entries(superficies)) {

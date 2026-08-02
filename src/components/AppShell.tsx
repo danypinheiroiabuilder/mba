@@ -23,11 +23,14 @@ function LoadingSkeleton() {
   );
 }
 
+// `label` é o nome completo (sidebar desktop e cabeçalho mobile).
+// `short` é o que cabe na barra inferior do celular, onde cada aba tem ~1/4 da
+// largura da tela: "Fluxo de Caixa" não cabe, "Fluxo" cabe.
 const nav = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/resumo", label: "Resumo Anual", icon: BarChart2 },
-  { href: "/transacoes", label: "Lançamentos", icon: ListPlus },
-  { href: "/categorias", label: "Categorias", icon: Tag },
+  { href: "/", label: "Início", short: "Início", icon: LayoutDashboard },
+  { href: "/resumo", label: "Fluxo de Caixa", short: "Fluxo", icon: BarChart2 },
+  { href: "/transacoes", label: "Lançamentos", short: "Lançamentos", icon: ListPlus },
+  { href: "/categorias", label: "Categorias", short: "Categorias", icon: Tag },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -185,7 +188,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     aria-current={active ? "page" : undefined}
                     aria-label={item.label}
                     className={[
-                      "relative flex flex-1 items-center justify-center rounded-2xl px-2 py-2 text-xs font-medium transition-colors",
+                      // min-h-[44px]: alvo de toque confortável (o conteúdo
+                      // empilhado mede menos que isso e encostaria no mínimo).
+                      "relative flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 font-medium transition-colors",
                       active ? "text-text" : "text-muted hover:text-text",
                     ].join(" ")}
                     title={item.label}
@@ -201,7 +206,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         }}
                       />
                     )}
-                    <Icon className="relative h-5 w-5" />
+                    <Icon className="relative h-5 w-5" aria-hidden="true" />
+                    {/* 11px + truncate: "Lançamentos" é o rótulo mais largo e
+                        passa raspando em telas de 320px. */}
+                    <span className="relative max-w-full truncate text-[11px] leading-tight">
+                      {item.short}
+                    </span>
                   </Link>
                 );
               })}

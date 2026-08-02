@@ -166,8 +166,8 @@ export function ResumoAnualPage() {
     <div className="space-y-6">
       <PageHeader
         label="Análise"
-        title="Resumo Anual"
-        subtitle={`Fluxo de caixa — ${periodLabel.toLowerCase()}`}
+        title="Fluxo de Caixa"
+        subtitle={periodLabel.toLowerCase()}
       />
 
       <Card>
