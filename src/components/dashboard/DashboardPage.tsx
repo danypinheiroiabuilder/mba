@@ -146,7 +146,6 @@ export function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         as="h1"
-        label="Início"
         title={monthLabelFromKey(safeMonthKey)}
         actions={<MonthNavigator monthKey={safeMonthKey} setMonthKey={setMonthKey} />}
       />

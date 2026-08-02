@@ -148,10 +148,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </aside>
 
             <div className="min-w-0 flex-1">
-              <header className="mb-4 flex items-center justify-between gap-2 sm:hidden">
-                <div className="min-w-0 truncate text-base font-semibold tracking-tight text-text">
-                  {nav.find((item) => isActive(pathname, item.href))?.label ?? "Fluxo de Caixa"}
-                </div>
+              {/* Sem o nome da rota: o PageHeader de cada pagina ja diz onde
+                  voce esta, com hierarquia e subtitulo. No celular os dois
+                  apareciam empilhados e repetiam a mesma palavra, gastando
+                  altura — o recurso mais escasso da tela. */}
+              <header className="mb-4 flex items-center justify-end gap-2 sm:hidden">
                 <ThemeToggle className="shrink-0" />
               </header>
 
