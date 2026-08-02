@@ -179,9 +179,8 @@ export default function TransacoesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        label="Cadastros"
-        title="Receitas &amp; Despesas"
-        subtitle={monthLabelFromKey(safeMonthKey)}
+        title="Lançamentos"
+        subtitle={`Receitas e despesas de ${monthLabelFromKey(safeMonthKey)}`}
         actions={
           <div className="flex flex-wrap gap-2">
             <MonthNavigator monthKey={safeMonthKey} setMonthKey={setMonthKey} />
@@ -235,7 +234,9 @@ export default function TransacoesPage() {
               <ListPlus className="h-4 w-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
             </div>
             <div>
-              <div className="text-sm font-medium text-muted">Lançamentos</div>
+              {/* "Detalhamento" e nao "Lancamentos": o titulo da pagina ja usa
+                  esse nome, e repeti-lo aqui recriaria a duplicata. */}
+              <div className="text-sm font-medium text-muted">Detalhamento</div>
               <div className="text-base font-semibold tracking-tight text-text">
                 Lista do mês
               </div>

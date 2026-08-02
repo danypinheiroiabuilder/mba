@@ -165,7 +165,6 @@ export function ResumoAnualPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        label="Análise"
         title="Fluxo de Caixa"
         subtitle={periodLabel.toLowerCase()}
       />

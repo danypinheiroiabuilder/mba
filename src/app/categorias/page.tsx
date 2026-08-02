@@ -109,7 +109,6 @@ export default function CategoriasPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        label="Cadastros"
         title="Categorias"
         actions={
           <Button variant="primary" onClick={openNew}>
